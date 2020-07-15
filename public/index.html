@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Polaris: webpack example</title>
+    <style>
+      </style>
+      <link rel="stylesheet" type="text/css" href="./public/index.css" >
+      <link rel="stylesheet" type="text/css" href="./public/spinner.css" >
+  </head>
+  <body>
+    <div class="wrapper">
+
+<div class="cart-popup-wrapper" role="dialog" aria-modal="true" aria-labelledby="CartPopupHeading" data-cart-popup-wrapper="">
+<div class="cart-popup-item__quantity">
+<span data-cart-popup-quantity-label=""></span>
+<span>Qty:</span>
+<span data-cart-popup-quantity=""></span>
+View cart (<span data-cart-popup-cart-quantity=""></span>)
+<div id="ClassCount" data-cart-count-bubble>
+  <span data-cart-count>3</span>
+</div>
+</div>
+</div>
+<br />
+      <span class="price-item" data-regular-price="">
+        $25.00
+      </span>
+      <form method="post" action="/cart/add" id="product_form_4486431866938">
+        <select name="id" style="display: none">
+          <option value="22222222222222222" selected="selected">Default title</option>
+        </select>
+        <div id="react-boxes">
+          <div class="spinner-wrapper">
+            <div class="loading-spinner"><div></div><div></div><div></div><div></div></div>
+          </div>
+        </div>
+        <button type="submit" disabled="disabled" name="add" aria-label="Add to cart" class="btn" aria-haspopup="dialog" data-add-to-cart="">
+          <span data-add-to-cart-text="">Add to cart </span>
+          <span class="hide" data-loader="">
+            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-spinner" viewBox="0 0 20 20">
+              <path d="M7.229 1.173a9.25 9.25 0 1 0 11.655 11.412 1.25 1.25 0 1 0-2.4-.698 6.75 6.75 0 1 1-8.506-8.329 1.25 1.25 0 1 0-.75-2.385z" fill="#919EAB">
+              </path>
+            </svg>
+          </span></button>
+      </form>
+    </div>
+  </body>
+</html>

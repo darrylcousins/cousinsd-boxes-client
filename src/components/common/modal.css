@@ -1,0 +1,62 @@
+.modal {
+  position: absolute;
+  top: 75px; /* 2rem app specific */
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+  /*
+  right: 0;
+  bottom: 0;
+  */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(40, 40, 40, .7);
+  border-radius: 5px;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.35s ease-in;
+  z-index: 1;
+}
+
+.modal.is-visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-dialog {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  max-width: 800px;
+  max-height: 80vh;
+  border-radius: 5px;
+  overflow: auto;
+  cursor: default;
+}
+
+.modal-dialog > * {
+  padding: 1rem;
+}
+
+.modal .close-modal {
+  position: absolute;
+  top:0;
+  right: 0;
+  font-size: 1.5rem;
+  border: 0;
+  background: transparent;
+  color: white;
+}
+
+.modal-text > p > strong {
+  color: white;
+}
+
+.modal p + p {
+  margin-top: 1rem;
+  color: white;
+}
