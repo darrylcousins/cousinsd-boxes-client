@@ -4,7 +4,7 @@ import {
   Subheading,
 } from '@shopify/polaris';
 import { Query } from '@apollo/react-components';
-import { Client } from '../../graphql/client'
+import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
 import { AddonQuantity } from './AddonQuantity';
 import { Spacer } from '../common/Spacer';
@@ -20,22 +20,24 @@ export const AddonText = () => {
   `;
 
   const TwoThirdWidth = styled.div`
-    width: 140%;
+    width: 100%;
   `;
 
+  const client = useApolloClient();
+
   const handleClearButton = ({ product }) => {
-    const data = Client.readQuery({
+    const data = client.readQuery({
       query: GET_CURRENT_SELECTION,
     });
     const current = { ...data.current };
     current.addons = current.addons.filter(el => el.id !== product.id);
     current.addons.sort(nameSort);
     current.exaddons = current.exaddons.concat([product]);
-    Client.writeQuery({ 
+    client.writeQuery({ 
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
-    updateTotalPrice({ product, sum: false });
+    updateTotalPrice(client);
   };
 
   return (

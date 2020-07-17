@@ -1,5 +1,4 @@
 import { LABELKEYS } from '../config';
-import { Client } from '../graphql/client'
 import {
   PRODUCT_FULL_FRAGMENT,
   PRODUCT_FRAGMENT,
@@ -27,11 +26,11 @@ export const numberFormat = (amount, currencyCode='NZD') => {
   )
 };
 
-export const updateTotalPrice = () => {
-  const { initial } = Client.readQuery({ 
+export const updateTotalPrice = (client) => {
+  const { initial } = client.readQuery({ 
     query: GET_INITIAL,
   });
-  const { current } = Client.readQuery({ 
+  const { current } = client.readQuery({ 
     query: GET_CURRENT_SELECTION,
   });
 
@@ -42,7 +41,7 @@ export const updateTotalPrice = () => {
   price = numberFormat(price * .01);
 
   const priceEl = document.querySelector('span[data-regular-price]');
-  priceEl.innerHTML = price;
+  if (priceEl) priceEl.innerHTML = price;
 };
 
 export const dateToISOString = (date) => {
@@ -111,14 +110,13 @@ export const makeCurrent = ({ current, client }) => {
     ? boxProducts.filter(el => current.including.indexOf(el.shopify_handle) > -1)
     : boxProducts;
   // XXX adjust for (qty)
-  console.log(current.addons);
   const tempAddOns = current.addons.map(el => {
     const idx = el.indexOf(' ');
     if (idx > -1) return el.slice(0, idx);
     return el;
   });
   const addons = availAddOns.filter(el => tempAddOns.indexOf(el.shopify_handle) > -1);
-  const exaddons = availAddOns.filter(el => current.addons.indexOf(el.shopify_handle) === -1);
+  const exaddons = availAddOns.filter(el => tempAddOns.indexOf(el.shopify_handle) === -1);
   const dislikes = boxProducts.filter(el => current.dislikes.indexOf(el.shopify_handle) > -1);
 
   //console.log('box current', JSON.stringify(current, null, 1));
@@ -187,7 +185,6 @@ export const makeInitialState = ({ response, path }) => {
         const subscription = subscribed in el.properties ? el.properties[subscribed] : '';
         const including = stringToArray(el.properties[p_in]);
         const addons = stringToArray(el.properties[p_add]);
-        console.log('addons in make initial', addons);
         const dislikes = stringToArray(el.properties[p_dislikes]);
         cart = Object.assign(cart, {
           total_price, 

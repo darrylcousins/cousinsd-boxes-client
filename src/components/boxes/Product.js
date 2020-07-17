@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Client } from '../../graphql/client'
+import { useApolloClient } from '@apollo/client';
 import { numberFormat, updateTotalPrice } from '../../lib';
 import { ProductWrapper } from './ProductWrapper';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
@@ -19,6 +19,7 @@ export const Product = ({ product, type, data }) => {
   const icon = removable ? <Cancel>&#215;</Cancel> : '';
 
   //if (product.id === '110') console.log(Client.cache.data.data);
+  const client = useApolloClient();
 
   const handleRemoveProduct = ({ product }) => {
     let to;
@@ -38,12 +39,12 @@ export const Product = ({ product, type, data }) => {
     temp.quantity = 1;
     current[to] = current[to].concat([temp]);
 
-    Client.writeQuery({ 
+    client.writeQuery({ 
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
 
-    updateTotalPrice();
+    updateTotalPrice(client);
   };
 
   if (!removable) {

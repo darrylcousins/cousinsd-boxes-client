@@ -163,7 +163,6 @@ export const AppWrapper = () => {
     };
   }, []);
 
-
   //console.log('App wrapper', Client.cache.data.data);
   /* get current cart data */
   return (
@@ -192,7 +191,7 @@ export const AppWrapper = () => {
             Client.cache.writeQuery({ query: GET_INITIAL, data: { initial } });
           }
 
-          return <App shopify_id={shopify_id} />;
+          return <App shopifyId={shopify_id} />;
         }}
       </Get>
     </ApolloProvider>

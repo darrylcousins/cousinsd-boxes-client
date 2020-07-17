@@ -5,7 +5,7 @@ import {
   Popover,
 } from '@shopify/polaris';
 import { Query } from '@apollo/react-components';
-import { Client } from '../../graphql/client'
+import { useApolloClient } from '@apollo/client';
 import { Loader } from '../common/Loader';
 import { Error } from '../common/Error';
 import { nameSort, numberFormat, updateTotalPrice } from '../../lib';
@@ -30,8 +30,10 @@ export const SelectAddons = () => {
   );
   /* end action select stuff */
 
+  const client = useApolloClient();
+
   const handleAction = ({ product }) => {
-    const data = Client.readQuery({ 
+    const data = client.readQuery({ 
       query: GET_CURRENT_SELECTION,
     });
     toggleSelectActive();
@@ -39,12 +41,12 @@ export const SelectAddons = () => {
     current.exaddons = current.exaddons.filter(el => el.id !== product.id);
     current.addons = current.addons.concat([product]);
     current.addons.sort(nameSort);
-    Client.writeQuery({ 
+    client.writeQuery({ 
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
 
-    updateTotalPrice();
+    updateTotalPrice(client);
   };
 
   return (

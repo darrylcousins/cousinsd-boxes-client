@@ -5,9 +5,9 @@ import {
   Popover,
 } from '@shopify/polaris';
 import { Query } from '@apollo/react-components';
+import { useApolloClient } from '@apollo/client';
 import { Loader } from '../common/Loader';
 import { Error } from '../common/Error';
-import { Client } from '../../graphql/client'
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 export const SelectDislikes = () => {
@@ -29,12 +29,14 @@ export const SelectDislikes = () => {
   );
   /* end action select stuff */
 
+  const client = useApolloClient();
+
   const handleAction = ({ product, data }) => {
     toggleSelectActive();
     const current = { ...data.current };
     current.including = current.including.filter(el => el.id !== product.id);
     current.dislikes = current.dislikes.concat([product]);
-    Client.writeQuery({ 
+    client.writeQuery({ 
       query: GET_CURRENT_SELECTION,
       data: { current },
     });

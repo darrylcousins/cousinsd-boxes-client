@@ -17,11 +17,12 @@ import {
   GET_CURRENT_SELECTION,
 } from './../graphql/local-queries';
 
-export const App = ({ shopify_id }) => {
+export const App = ({ shopifyId }) => {
 
   /* XXX my idea is that we can use the initial data not only for reloading a
    * cart item but also for subscriptions
    */
+  const shopify_id = shopifyId;
 
   const [loaded, setLoaded] = useState(false);
 
