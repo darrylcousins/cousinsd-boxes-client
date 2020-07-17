@@ -11,7 +11,6 @@ import { Spacer } from '../common/Spacer';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 export const Box = ({ loaded }) => {
-
   if (!loaded) return <strong>LOADING</strong>;
   const [customise, setCustomise] = useState(false);
   const handleChange = useCallback((newChecked) => setCustomise(newChecked), []);
@@ -28,18 +27,18 @@ export const Box = ({ loaded }) => {
           <>
             <Spacer />
             <SelectDislikes />
-            <ProductList type='dislikes' />
+            <ProductList type="dislikes" />
             <AddonText />
             <SelectAddons />
-            <ProductList type='exaddons' />
+            <ProductList type="exaddons" />
           </>
         );
         return (
           <>
-            <ProductList type='including' />
-            <div key='table' style={{ display: 'table' }}>
-              <div key='table-row' style={{ display: 'table-row' }}>
-                <div key='table-cell' style={{ display: 'table-cell' }}>
+            <ProductList type="including" />
+            <div key="table" style={{ display: 'table' }}>
+              <div key="table-row" style={{ display: 'table-row' }}>
+                <div key="table-cell" style={{ display: 'table-cell' }}>
                   <Checkbox
                     checked={customise}
                     onChange={handleChange}

@@ -12,9 +12,8 @@ import { nameSort, numberFormat, updateTotalPrice } from '../../lib';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 export const SelectAddons = () => {
-  
   /* XXX products are current.exaddons */
-  
+
   /* action select stuff */
   const [selectActive, setSelectActive] = useState(false);
   const toggleSelectActive = useCallback(
@@ -26,22 +25,24 @@ export const SelectAddons = () => {
       onClick={toggleSelectActive}
       disclosure
       fullWidth
-    >Select items you&apos;d like to add to the box</Button>
+    >
+      Select items you&apos;d like to add to the box
+    </Button>
   );
   /* end action select stuff */
 
   const client = useApolloClient();
 
   const handleAction = ({ product }) => {
-    const data = client.readQuery({ 
+    const data = client.readQuery({
       query: GET_CURRENT_SELECTION,
     });
     toggleSelectActive();
     const current = { ...data.current };
-    current.exaddons = current.exaddons.filter(el => el.id !== product.id);
+    current.exaddons = current.exaddons.filter((el) => el.id !== product.id);
     current.addons = current.addons.concat([product]);
     current.addons.sort(nameSort);
-    client.writeQuery({ 
+    client.writeQuery({
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
@@ -67,9 +68,9 @@ export const SelectAddons = () => {
           >
             <ActionList
               items={
-                products.map(product => (
+                products.map((product) => (
                   {
-                    content: `${product.title} ${numberFormat(product.shopify_price*0.01)}`,
+                    content: `${product.title} ${numberFormat(product.shopify_price * 0.01)}`,
                     onAction: () => handleAction({ product }),
                   }
                 ))
@@ -80,7 +81,4 @@ export const SelectAddons = () => {
       }}
     </Query>
   );
-}
-
-
-
+};

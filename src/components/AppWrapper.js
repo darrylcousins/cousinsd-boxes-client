@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from '@apollo/client';
-import { Client } from './../graphql/client'
-import { makeInitialState } from './../lib';
+import { Client } from '../graphql/client';
+import { makeInitialState } from '../lib';
 import { Loader } from './common/Loader';
 import { Error } from './common/Error';
 import { Get } from './common/Get';
@@ -9,22 +9,20 @@ import { App } from './App';
 import {
   GET_INITIAL,
   GET_CURRENT_SELECTION,
-} from './../graphql/local-queries';
-import { SUBSCRIPTIONS, LABELKEYS } from './../config';
+} from '../graphql/local-queries';
+import { SUBSCRIPTIONS, LABELKEYS } from '../config';
 
 export const AppWrapper = () => {
-
   const shopify_id = parseInt(document.querySelector('form[action="/cart/add"]')
     .getAttribute('id').split('_')[2]);
 
   function postFetch(url, data) {
-    console.log('sending to ', url,  data);
+    console.log('sending to ', url, data);
     return fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }
-    );
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
   }
 
   useEffect(() => {
@@ -40,15 +38,15 @@ export const AppWrapper = () => {
     const cartIcon = document.querySelector('div[data-cart-count-bubble');
     const cartCount = cartIcon.querySelector('span[data-cart-count]');
     const cartPopup = document.querySelector('div[data-cart-popup-wrapper');
-    const cartPopupCount= cartPopup.querySelector('span[data-cart-popup-quantity]');
+    const cartPopupCount = cartPopup.querySelector('span[data-cart-popup-quantity]');
     const cartPopupCountCart = cartPopup.querySelector('span[data-cart-popup-cart-quantity]');
     let initialCount = parseInt(cartCount.innerHTML.trim());
     if (isNaN(initialCount)) initialCount = 0;
 
     const submitHandler = (e) => {
       buttonLoader.classList.remove('hide');
-      var select = form.elements.id;
-      var option = select.options[select.selectedIndex]
+      const select = form.elements.id;
+      const option = select.options[select.selectedIndex];
 
       const { current } = Client.readQuery({
         query: GET_CURRENT_SELECTION,
@@ -58,7 +56,7 @@ export const AppWrapper = () => {
       });
 
       const title = current.box.shopify_title;
-      const delivered = current.delivered;
+      const { delivered } = current;
       const items = [];
 
       current.addons.forEach((el) => {
@@ -67,34 +65,34 @@ export const AppWrapper = () => {
           id: el.shopify_variant_id.toString(),
           properties: {
             'Delivery Date': `${delivered}`,
-            'Add on product to': `${title}`
-          }
+            'Add on product to': `${title}`,
+          },
         });
       });
 
-      const addons = current.addons.map(el => {
+      const addons = current.addons.map((el) => {
         if (el.quantity > 1) return `${el.title} (${el.quantity})`;
         return el.title;
       }).join(', ');
-      const removed = current.dislikes.map(el => el.title).join(', ');
-      const including = current.including.map(el => el.title).join(', ');
+      const removed = current.dislikes.map((el) => el.title).join(', ');
+      const including = current.including.map((el) => el.title).join(', ');
 
-      let properties = {
+      const properties = {
         'Delivery Date': `${delivered}`,
-        'Including': including,
+        Including: including,
         'Add on items': addons,
         'Removed items': removed,
-      }
-      
-      const subscription = current.subscription;
+      };
+
+      const { subscription } = current;
       if (SUBSCRIPTIONS.indexOf(subscription) > -1) {
-        properties['Subscription'] = subscription;
+        properties.Subscription = subscription;
       }
 
       items.push({
         quantity: 1,
         id: option.value,
-        properties: properties,
+        properties,
       });
 
       const onFinish = (data, items) => {
@@ -102,25 +100,23 @@ export const AppWrapper = () => {
         cartIcon.classList.remove('hide');
         cartPopup.classList.remove('cart-popup-wrapper--hidden');
         buttonLoader.classList.add('hide');
-        const itemCount = items.map(el => el.quantity).reduce((acc, curr) => acc + curr);
+        const itemCount = items.map((el) => el.quantity).reduce((acc, curr) => acc + curr);
         cartCount.innerHTML = itemCount;
         cartPopupCount.innerHTML = itemCount;
         cartPopupCountCart.innerHTML = itemCount;
-        
+
         // rest initial values to the current
         const tempInitial = { ...initial };
         tempInitial.is_loaded = true;
-        tempInitial.addons = current.addons.map(el => el.shopify_handle);
-        tempInitial.dislikes = current.dislikes.map(el => el.shopify_handle);
-        tempInitial.including = current.including.map(el => el.shopify_handle);
-        tempInitial.quantities = current.addons.map(el => {
-          return {
-            handle: el.shopify_handle,
-            quantity: el.quantity,
-            variant_id: el.shopify_variant_id
-          };
-        });
-        Client.writeQuery({ 
+        tempInitial.addons = current.addons.map((el) => el.shopify_handle);
+        tempInitial.dislikes = current.dislikes.map((el) => el.shopify_handle);
+        tempInitial.including = current.including.map((el) => el.shopify_handle);
+        tempInitial.quantities = current.addons.map((el) => ({
+          handle: el.shopify_handle,
+          quantity: el.quantity,
+          variant_id: el.shopify_variant_id,
+        }));
+        Client.writeQuery({
           query: GET_INITIAL,
           data: { initial: tempInitial },
         });
@@ -139,17 +135,17 @@ export const AppWrapper = () => {
         });
         update.updates[option.value] = 0;
         postFetch('/cart/update.js', update)
-          .then(data => {
+          .then((data) => {
             console.log('returned from cart/update', data);
             cartCount.innerHTML = initialCount - total_quantity;
             postFetch('/cart/add.js', { items })
-              .then(data => {
+              .then((data) => {
                 onFinish(data, items);
               });
           });
       } else {
         postFetch('/cart/add.js', { items })
-          .then(data => {
+          .then((data) => {
             onFinish(data, items);
           });
       }
@@ -163,17 +159,16 @@ export const AppWrapper = () => {
     };
   }, []);
 
-  //console.log('App wrapper', Client.cache.data.data);
+  // console.log('App wrapper', Client.cache.data.data);
   /* get current cart data */
   return (
     <ApolloProvider client={Client}>
       <Get
-        url='/cart.js'
+        url="/cart.js"
       >
         {({ loading, error, response }) => {
           if (loading) return <Loader lines={4} />;
           if (error) return <Error message={error.message} />;
-
 
           // essential check to avoid server side error
           let path;

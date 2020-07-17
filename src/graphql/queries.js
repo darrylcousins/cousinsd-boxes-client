@@ -30,7 +30,7 @@ export const FRAGMENT_ADDONS_ARRAY = gql`
     }
 }`;
 
-export const GET_BOX= gql`
+export const GET_BOX = gql`
   query getBox($input: BoxIdInput!) {
     getBox(input: $input) {
       ...productArray

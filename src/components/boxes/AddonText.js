@@ -14,7 +14,6 @@ import { nameSort, updateTotalPrice } from '../../lib';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 export const AddonText = () => {
-
   const ThirdWidth = styled.div`
     width: 30%;
   `;
@@ -30,10 +29,10 @@ export const AddonText = () => {
       query: GET_CURRENT_SELECTION,
     });
     const current = { ...data.current };
-    current.addons = current.addons.filter(el => el.id !== product.id);
+    current.addons = current.addons.filter((el) => el.id !== product.id);
     current.addons.sort(nameSort);
     current.exaddons = current.exaddons.concat([product]);
-    client.writeQuery({ 
+    client.writeQuery({
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
@@ -47,40 +46,39 @@ export const AddonText = () => {
       {({ loading, error, data }) => {
         if (loading) return <Loader lines={2} />;
         if (error) return <Error message={error.message} />;
-        const addons = data.current.addons;
+        const { addons } = data.current;
         if (addons.length > 0) {
           return (
-            <React.Fragment>
-            <Subheading>Add on products</Subheading>
-            { addons.map(el => (
-              <React.Fragment key={el.id}>
-                <Spacer />
-                <TwoThirdWidth>
-                  <TextField
-                    value={el.title}
-                    readOnly={true}
-                    clearButton={true}
-                    onClearButtonClick={ () => handleClearButton({ product: el }) }
-                    connectedRight={
-                      <ThirdWidth>
-                        <AddonQuantity
-                          qty={el.quantity.toString()}
-                          id={el.id}
-                          data={ data }
-                        />
-                      </ThirdWidth>
-                    }
-                  />
-                </TwoThirdWidth>
-                <Spacer />
-              </React.Fragment>
-            )) }
-            </React.Fragment>
+            <>
+              <Subheading>Add on products</Subheading>
+              { addons.map((el) => (
+                <React.Fragment key={el.id}>
+                  <Spacer />
+                  <TwoThirdWidth>
+                    <TextField
+                      value={el.title}
+                      readOnly
+                      clearButton
+                      onClearButtonClick={() => handleClearButton({ product: el })}
+                      connectedRight={(
+                        <ThirdWidth>
+                          <AddonQuantity
+                            qty={el.quantity.toString()}
+                            id={el.id}
+                            data={data}
+                          />
+                        </ThirdWidth>
+                    )}
+                    />
+                  </TwoThirdWidth>
+                  <Spacer />
+                </React.Fragment>
+              )) }
+            </>
           );
-        } else {
-          return null;
         }
+        return null;
       }}
     </Query>
   );
-}
+};

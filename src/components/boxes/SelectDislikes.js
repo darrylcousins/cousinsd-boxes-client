@@ -11,9 +11,8 @@ import { Error } from '../common/Error';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 export const SelectDislikes = () => {
-  
   /* XXX products are current.including */
-  
+
   /* action select stuff */
   const [selectActive, setSelectActive] = useState(false);
   const toggleSelectActive = useCallback(
@@ -25,7 +24,9 @@ export const SelectDislikes = () => {
       onClick={toggleSelectActive}
       disclosure
       fullWidth
-    >Select items you&apos;d prefer not to receive</Button>
+    >
+      Select items you&apos;d prefer not to receive
+    </Button>
   );
   /* end action select stuff */
 
@@ -34,9 +35,9 @@ export const SelectDislikes = () => {
   const handleAction = ({ product, data }) => {
     toggleSelectActive();
     const current = { ...data.current };
-    current.including = current.including.filter(el => el.id !== product.id);
+    current.including = current.including.filter((el) => el.id !== product.id);
     current.dislikes = current.dislikes.concat([product]);
-    client.writeQuery({ 
+    client.writeQuery({
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
@@ -60,7 +61,7 @@ export const SelectDislikes = () => {
           >
             <ActionList
               items={
-                products.map(product => (
+                products.map((product) => (
                   {
                     content: product.title,
                     onAction: () => handleAction({ product, data }),
@@ -73,4 +74,4 @@ export const SelectDislikes = () => {
       }}
     </Query>
   );
-}
+};

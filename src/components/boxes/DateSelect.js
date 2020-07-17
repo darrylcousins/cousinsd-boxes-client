@@ -7,7 +7,6 @@ import {
 } from '@shopify/polaris';
 
 export const DateSelect = ({ initialData, boxes, onSelect }) => {
-
   /* delivery date stuff */
   const [deliveryDate, setDeliveryDate] = useState(initialData.delivered);
   /* end delivery date stuff */
@@ -24,7 +23,9 @@ export const DateSelect = ({ initialData, boxes, onSelect }) => {
       onClick={toggleSelectActive}
       disclosure
       fullWidth
-    >{ deliveryDate ? deliveryDate : 'Choose delivery date' }</Button>
+    >
+      { deliveryDate || 'Choose delivery date' }
+    </Button>
   );
   /* end action select stuff */
 
@@ -37,23 +38,21 @@ export const DateSelect = ({ initialData, boxes, onSelect }) => {
   useEffect(() => {
     if (initialData.delivered.length > 0) {
       handleDateSelect(initialData);
-    } else {
-      if (boxes.length == 1) {
-        const data = Object.assign(initialData, {
-          delivered: new Date(parseInt(boxes[0].delivered)).toDateString(),
-          shopify_id: boxes[0].shopify_id,
-          box_id: boxes[0].id,
-          shopify_title: boxes[0].shopify_title,
-          /* reset because selected different box */
-          including: [],
-          dislikes: [],
-          addons: [],
-          quantities: [],
-          subscription: '',
-          is_loaded: false,
-        });
-        handleDateSelect(data);
-      }
+    } else if (boxes.length == 1) {
+      const data = Object.assign(initialData, {
+        delivered: new Date(parseInt(boxes[0].delivered)).toDateString(),
+        shopify_id: boxes[0].shopify_id,
+        box_id: boxes[0].id,
+        shopify_title: boxes[0].shopify_title,
+        /* reset because selected different box */
+        including: [],
+        dislikes: [],
+        addons: [],
+        quantities: [],
+        subscription: '',
+        is_loaded: false,
+      });
+      handleDateSelect(data);
     }
   }, []);
 
@@ -61,7 +60,7 @@ export const DateSelect = ({ initialData, boxes, onSelect }) => {
     if (!deliveryDate) {
       return (
         <div style={{ marginBottom: '1rem' }}>
-          <Banner status='warning'>Please choose a date for delivery</Banner> 
+          <Banner status="warning">Please choose a date for delivery</Banner>
         </div>
       );
     }
@@ -79,7 +78,7 @@ export const DateSelect = ({ initialData, boxes, onSelect }) => {
       >
         <ActionList
           items={
-            boxes.map(item => (
+            boxes.map((item) => (
               {
                 content: new Date(parseInt(item.delivered)).toDateString(),
                 onAction: () => handleDateSelect(Object.assign(initialData, {
@@ -102,7 +101,4 @@ export const DateSelect = ({ initialData, boxes, onSelect }) => {
       </Popover>
     </>
   );
-}
-
-
-
+};

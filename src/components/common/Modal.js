@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './modal.css';
 
 export const Modal = ({ visible, content, onClose }) => {
-
   const [isVisible, setIsVisible] = useState(visible);
 
   useEffect(() => {
     setIsVisible(visible);
-  }, [])
+  }, []);
 
   const closeModal = (e) => {
     e.preventDefault();
@@ -26,11 +25,11 @@ export const Modal = ({ visible, content, onClose }) => {
             aria-label="close modal"
             data-close
           >
-          ✕  
+            ✕
           </button>
           <div className="modal-text">{ content }</div>
         </section>
       </div>
     </div>
   );
-}
+};

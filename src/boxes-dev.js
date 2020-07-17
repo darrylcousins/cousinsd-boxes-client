@@ -4,7 +4,7 @@ import { AppProvider } from '@shopify/polaris';
 import enTranslations from '@shopify/polaris/locales/en.json';
 import '@shopify/polaris/styles.css';
 
-import { AppWrapper } from "./components/AppWrapper"
+import { AppWrapper } from './components/AppWrapper';
 
 function WrappedApp() {
   return (
@@ -14,12 +14,12 @@ function WrappedApp() {
   );
 }
 
-var form = document.querySelector('form[action="/cart/add"]');
+const form = document.querySelector('form[action="/cart/add"]');
 if (form) {
-    var cln = form.cloneNode(true);
-    form.parentNode.replaceChild(cln, form);
-};
+  const cln = form.cloneNode(true);
+  form.parentNode.replaceChild(cln, form);
+}
 
-const rootEl = document.getElementById("react-boxes")
+const rootEl = document.getElementById('react-boxes');
 
-rootEl && ReactDOM.render(<WrappedApp />, rootEl)
+rootEl && ReactDOM.render(<WrappedApp />, rootEl);

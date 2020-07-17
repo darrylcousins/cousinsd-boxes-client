@@ -14,31 +14,31 @@ export const nameSort = (a, b) => {
   return 0;
 };
 
-export const numberFormat = (amount, currencyCode='NZD') => {
-  let amt = parseFloat(amount);
+export const numberFormat = (amount, currencyCode = 'NZD') => {
+  const amt = parseFloat(amount);
   let locale = 'en-NZ';
   if (currencyCode == 'NZD') locale = 'en-NZ';
   return (
     new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: currencyCode
+      style: 'currency',
+      currency: currencyCode,
     }).format(amt)
-  )
+  );
 };
 
 export const updateTotalPrice = (client) => {
-  const { initial } = client.readQuery({ 
+  const { initial } = client.readQuery({
     query: GET_INITIAL,
   });
-  const { current } = client.readQuery({ 
+  const { current } = client.readQuery({
     query: GET_CURRENT_SELECTION,
   });
 
-  var price = current.box.shopify_price;
-  current.addons.map(el => {
+  let price = current.box.shopify_price;
+  current.addons.map((el) => {
     price += el.quantity * el.shopify_price;
   });
-  price = numberFormat(price * .01);
+  price = numberFormat(price * 0.01);
 
   const priceEl = document.querySelector('span[data-regular-price]');
   if (priceEl) priceEl.innerHTML = price;
@@ -49,7 +49,7 @@ export const dateToISOString = (date) => {
   return date.toISOString().slice(0, 10); // try this out later
 };
 
-const arrSum = arr => arr.reduce((a,b) => a + b, 0)
+const arrSum = (arr) => arr.reduce((a, b) => a + b, 0);
 export const checkLengths = (a, b) => {
   if (!(arrSum(a) === arrSum(b))) throw 'Product lengths do not match!!!';
 };
@@ -58,15 +58,16 @@ export const makeCurrent = ({ current, client }) => {
   /* the objects in the arrays are immutable so cannot add attribute
    * hence doing the json thing to denature the objects
    */
-  const box = current.box;
+  const { box } = current;
   const qtys = current.quantities.reduce(
     (acc, curr) => Object.assign(acc, { [`${curr.handle}`]: curr.quantity }),
-    {});
-  let includeIds = [];
+    {},
+  );
+  const includeIds = [];
   const boxProducts = JSON.parse(JSON.stringify(box.products))
-    .filter(item => item.available)
-    .map(item => {
-      var quantity = item.shopify_handle in qtys ? qtys[item.shopify_handle] : 1;
+    .filter((item) => item.available)
+    .map((item) => {
+      const quantity = item.shopify_handle in qtys ? qtys[item.shopify_handle] : 1;
       if (current.including.indexOf(item.shopify_handle) > -1) {
         includeIds.push(item.id);
       }
@@ -74,20 +75,20 @@ export const makeCurrent = ({ current, client }) => {
         id: item.id,
         fragment: PRODUCT_FRAGMENT,
         data: {
-          quantity: quantity,
+          quantity,
           isAddOn: false,
         },
       });
-      //return box.products.filter(el => el.id === item.id)[0];
+      // return box.products.filter(el => el.id === item.id)[0];
       return client.readFragment({
         id: item.id,
         fragment: PRODUCT_FULL_FRAGMENT,
       });
     });
   const availAddOns = JSON.parse(JSON.stringify(box.addOnProducts))
-    .filter(item => item.available)
-    .map(item => {
-      var quantity = item.shopify_handle in qtys ? qtys[item.shopify_handle] : 1;
+    .filter((item) => item.available)
+    .map((item) => {
+      const quantity = item.shopify_handle in qtys ? qtys[item.shopify_handle] : 1;
       if (current.including.indexOf(item.shopify_handle) > -1) {
         includeIds.push(item.id);
       }
@@ -95,11 +96,11 @@ export const makeCurrent = ({ current, client }) => {
         id: item.id,
         fragment: PRODUCT_FRAGMENT,
         data: {
-          quantity: quantity,
+          quantity,
           isAddOn: true,
         },
       });
-      //return box.addOnProducts.filter(el => el.id === item.id)[0];
+      // return box.addOnProducts.filter(el => el.id === item.id)[0];
       return client.readFragment({
         id: item.id,
         fragment: PRODUCT_FULL_FRAGMENT,
@@ -107,55 +108,52 @@ export const makeCurrent = ({ current, client }) => {
     });
 
   const including = (current.including.length)
-    ? boxProducts.filter(el => current.including.indexOf(el.shopify_handle) > -1)
+    ? boxProducts.filter((el) => current.including.indexOf(el.shopify_handle) > -1)
     : boxProducts;
   // XXX adjust for (qty)
-  const tempAddOns = current.addons.map(el => {
+  const tempAddOns = current.addons.map((el) => {
     const idx = el.indexOf(' ');
     if (idx > -1) return el.slice(0, idx);
     return el;
   });
-  const addons = availAddOns.filter(el => tempAddOns.indexOf(el.shopify_handle) > -1);
-  const exaddons = availAddOns.filter(el => tempAddOns.indexOf(el.shopify_handle) === -1);
-  const dislikes = boxProducts.filter(el => current.dislikes.indexOf(el.shopify_handle) > -1);
+  const addons = availAddOns.filter((el) => tempAddOns.indexOf(el.shopify_handle) > -1);
+  const exaddons = availAddOns.filter((el) => tempAddOns.indexOf(el.shopify_handle) === -1);
+  const dislikes = boxProducts.filter((el) => current.dislikes.indexOf(el.shopify_handle) > -1);
 
-  //console.log('box current', JSON.stringify(current, null, 1));
+  // console.log('box current', JSON.stringify(current, null, 1));
 
   // reduce to remove product arrays from box
   const update = {
-    box: box,
+    box,
     delivered: current.delivered,
-    including: including,
-    addons: addons,
-    exaddons: exaddons,
-    dislikes: dislikes,
+    including,
+    addons,
+    exaddons,
+    dislikes,
     subscription: current.subscription,
   };
-  //console.log('box update', JSON.stringify(update, null, 1));
+  // console.log('box update', JSON.stringify(update, null, 1));
   return { current: update };
 };
 
 export const toHandle = (title) => title.replace(' ', '-').toLowerCase();
 
-export const stringToArray = (arr) => {
-  return arr.split(',')
-    .map(el => {
-      const matches = el.matchAll(/\(\d+\)/g);
-      if (matches) {
-        let res;
-        for (res of matches) continue;
-        if (res) return el.slice(0, res.index).trim();
-      };
-      return el.trim();
-    })
-    .filter(el => el != '')
-    .map(el => toHandle(el));
-};
+export const stringToArray = (arr) => arr.split(',')
+  .map((el) => {
+    const matches = el.matchAll(/\(\d+\)/g);
+    if (matches) {
+      let res;
+      for (res of matches) continue;
+      if (res) return el.slice(0, res.index).trim();
+    }
+    return el.trim();
+  })
+  .filter((el) => el != '')
+  .map((el) => toHandle(el));
 
 export const makeInitialState = ({ response, path }) => {
-
   const [delivery_date, p_in, p_add, p_dislikes, subscribed, addprod] = LABELKEYS;
-  
+
   const priceEl = document.querySelector('span[data-regular-price]');
   const price = parseFloat(priceEl.innerHTML.trim().slice(1)) * 100;
 
@@ -178,7 +176,7 @@ export const makeInitialState = ({ response, path }) => {
   if (response.items) {
     response.items.forEach((el) => {
       if (el.product_type == 'Veggie Box' && path.indexOf(el.handle)) {
-        const total_price = response.total_price; // true total including addons
+        const { total_price } = response; // true total including addons
         const shopify_title = el.title;
         const shopify_id = el.product_id;
         const delivered = el.properties[delivery_date];
@@ -187,13 +185,13 @@ export const makeInitialState = ({ response, path }) => {
         const addons = stringToArray(el.properties[p_add]);
         const dislikes = stringToArray(el.properties[p_dislikes]);
         cart = Object.assign(cart, {
-          total_price, 
-          delivered, 
-          shopify_id, 
-          shopify_title, 
-          including, 
-          addons, 
-          dislikes, 
+          total_price,
+          delivered,
+          shopify_id,
+          shopify_title,
+          including,
+          addons,
+          dislikes,
           subscription,
           is_loaded: true,
         });
@@ -210,13 +208,13 @@ export const makeInitialState = ({ response, path }) => {
               cart.quantities.push({
                 handle: el.handle,
                 quantity: el.quantity,
-                variant_id: el.variant_id
+                variant_id: el.variant_id,
               });
             }
           }
         }
       }
-    })
+    });
   }
   return cart;
 };

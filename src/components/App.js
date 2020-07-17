@@ -1,24 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import { Query } from '@apollo/react-components';
-import { Client } from './../graphql/client'
-import { SHOP_ID } from './../config';
+import { Client } from '../graphql/client';
+import { SHOP_ID } from '../config';
 import { Loader } from './common/Loader';
 import { Error } from './common/Error';
 import { DateSelect } from './boxes/DateSelect';
 import { Subscription } from './boxes/Subscription';
 import { Box } from './boxes/Box';
 import { Spacer } from './common/Spacer';
-import { makeCurrent, numberFormat } from './../lib';
+import { makeCurrent, numberFormat } from '../lib';
 import {
   GET_BOXES,
-} from './../graphql/queries';
+} from '../graphql/queries';
 import {
   GET_INITIAL,
   GET_CURRENT_SELECTION,
-} from './../graphql/local-queries';
+} from '../graphql/local-queries';
 
 export const App = ({ shopifyId }) => {
-
   /* XXX my idea is that we can use the initial data not only for reloading a
    * cart item but also for subscriptions
    */
@@ -28,12 +27,12 @@ export const App = ({ shopifyId }) => {
 
   /* subscription selector */
   const handleSubscriptionChange = (subscription) => {
-    const { current } = Client.readQuery({ 
+    const { current } = Client.readQuery({
       query: GET_CURRENT_SELECTION,
     });
     const update = { ...current };
     update.subscription = subscription;
-    Client.writeQuery({ 
+    Client.writeQuery({
       query: GET_CURRENT_SELECTION,
       data: { current: update },
     });
@@ -60,14 +59,14 @@ export const App = ({ shopifyId }) => {
 
         const input = {
           ShopId: SHOP_ID,
-          shopify_id: shopify_id,
+          shopify_id,
         };
 
         return (
           <Query
             query={GET_BOXES}
             variables={{ input }}
-            fetchPolicy='cache'
+            fetchPolicy="cache"
           >
             {({ loading, error, data }) => {
               if (loading) return <Loader lines={4} />;
@@ -78,19 +77,19 @@ export const App = ({ shopifyId }) => {
 
               // we re running a stored box (cart or subscription)
               if (initialCopy.delivered.length > 0) {
-                var box = boxes.filter(el => new Date(Date.parse((initialCopy.delivered))).getTime() === parseInt(el.delivered));
+                const box = boxes.filter((el) => new Date(Date.parse((initialCopy.delivered))).getTime() === parseInt(el.delivered));
                 if (box.length > 0) initialCopy.box_id = box[0].id;
               }
 
               const handleSelect = (initial) => {
-                Client.writeQuery({ 
+                Client.writeQuery({
                   query: GET_INITIAL,
                   data: { initial },
                 });
-                var temp = boxes.filter(el => el.id === initial.box_id);
+                const temp = boxes.filter((el) => el.id === initial.box_id);
                 if (temp.length > 0) {
-                  var box = temp[0];
-                  var start = {
+                  const box = temp[0];
+                  const start = {
                     box,
                     delivered: initial.delivered,
                     including: initial.including,
@@ -100,15 +99,15 @@ export const App = ({ shopifyId }) => {
                     quantities: initial.quantities,
                     subscription: initial.subscription,
                   };
-                  var { current } = makeCurrent({ current: start, client: Client });
-                  Client.writeQuery({ 
+                  const { current } = makeCurrent({ current: start, client: Client });
+                  Client.writeQuery({
                     query: GET_CURRENT_SELECTION,
                     data: { current },
                   });
                 }
                 setLoaded(true);
 
-                //console.log(Client.cache.data.data);
+                // console.log(Client.cache.data.data);
                 console.log('reading initial from client', Client.readQuery({
                   query: GET_INITIAL,
                 }));
@@ -122,8 +121,7 @@ export const App = ({ shopifyId }) => {
                 // loaded existing cart or subscription values
                 if (initial.is_loaded) {
                   button.querySelector('[data-add-to-cart-text]').innerHTML = 'Update selection';
-                };
-
+                }
               };
               /*
               */
@@ -134,23 +132,26 @@ export const App = ({ shopifyId }) => {
                   width: '100%',
                   height: '100%',
                   position: 'relative',
-                }}>
-                <DateSelect
-                  boxes={boxes}
-                  initialData={initialCopy}
-                  onSelect={handleSelect} />
-                <Box
-                  loaded={loaded}
+                }}
+                >
+                  <DateSelect
+                    boxes={boxes}
+                    initialData={initialCopy}
+                    onSelect={handleSelect}
                   />
-                <Spacer />
-                <Subscription
-                  state={initial.subscription}
-                  handleChange={handleSubscriptionChange} />
+                  <Box
+                    loaded={loaded}
+                  />
+                  <Spacer />
+                  <Subscription
+                    state={initial.subscription}
+                    handleChange={handleSubscriptionChange}
+                  />
                 </div>
               );
             }}
           </Query>
-        )
+        );
       }}
     </Query>
   );

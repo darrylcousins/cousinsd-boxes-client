@@ -20,5 +20,4 @@ export const current = {
   exaddons: [],
   dislikes: [],
   subscription: false,
-}
-
+};

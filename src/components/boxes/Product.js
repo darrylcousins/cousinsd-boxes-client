@@ -11,14 +11,13 @@ const Cancel = styled.span`
 `;
 
 export const Product = ({ product, type, data }) => {
-
   const price = product.quantity * product.shopify_price;
   const productprice = product.isAddOn ? numberFormat(parseInt(price) * 0.01) : '';
   const quantity = product.quantity > 1 ? ` (${product.quantity}) ` : ' ';
-  const removable = (product.isAddOn && type === 'including') || type === 'dislikes'; 
+  const removable = (product.isAddOn && type === 'including') || type === 'dislikes';
   const icon = removable ? <Cancel>&#215;</Cancel> : '';
 
-  //if (product.id === '110') console.log(Client.cache.data.data);
+  // if (product.id === '110') console.log(Client.cache.data.data);
   const client = useApolloClient();
 
   const handleRemoveProduct = ({ product }) => {
@@ -33,13 +32,13 @@ export const Product = ({ product, type, data }) => {
     }
 
     const current = { ...data.current };
-    current[from] = current[from].filter(el => el.id !== product.id);
+    current[from] = current[from].filter((el) => el.id !== product.id);
 
     const temp = { ...product };
     temp.quantity = 1;
     current[to] = current[to].concat([temp]);
 
-    client.writeQuery({ 
+    client.writeQuery({
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
@@ -51,20 +50,26 @@ export const Product = ({ product, type, data }) => {
     return (
       <ProductWrapper
         isAddOn={product.isAddOn}
-        removable={removable}>
-          {product.title}{quantity}{productprice}{icon}
+        removable={removable}
+      >
+        {product.title}
+        {quantity}
+        {productprice}
+        {icon}
       </ProductWrapper>
     );
-  } else {
-    return (
-      <div onClick={ () => handleRemoveProduct({ product }) }>
-        <ProductWrapper
-          isAddOn={product.isAddOn}
-          removable={removable}>
-            {product.title}{quantity}{productprice}{icon}
-        </ProductWrapper>
-      </div>
-    );
   }
-}
-
+  return (
+    <div onClick={() => handleRemoveProduct({ product })}>
+      <ProductWrapper
+        isAddOn={product.isAddOn}
+        removable={removable}
+      >
+        {product.title}
+        {quantity}
+        {productprice}
+        {icon}
+      </ProductWrapper>
+    </div>
+  );
+};

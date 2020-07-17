@@ -11,7 +11,7 @@ const spinnerStyle = {
   left: '50%',
   top: '50%',
   transform: 'translate(-50%, -50%)',
-}
+};
 
 export const LoadingTextMarkup = ({ lines }) => (
   <div style={{ position: 'relative' }}>
@@ -24,4 +24,4 @@ export const LoadingTextMarkup = ({ lines }) => (
       <Spinner />
     </div>
   </div>
-)
+);

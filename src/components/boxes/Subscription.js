@@ -7,7 +7,6 @@ import {
 import { SUBSCRIPTIONS } from '../../config';
 
 export const Subscription = ({ state, handleChange }) => {
-
   const [popoverActive, setPopoverActive] = useState(false);
   const togglePopoverActive = useCallback(
     () => setPopoverActive((popoverActive) => !popoverActive),
@@ -22,12 +21,12 @@ export const Subscription = ({ state, handleChange }) => {
     setSubscription(value);
     handleChange(value);
     togglePopoverActive();
-  }
+  };
 
   return (
     <Popover
       fullWidth
-      fluidContent={true}
+      fluidContent
       active={popoverActive}
       onClose={togglePopoverActive}
       activator={(
@@ -35,18 +34,17 @@ export const Subscription = ({ state, handleChange }) => {
           fullWidth
           onClick={togglePopoverActive}
           disclosure={!popoverActive ? 'down' : 'up'}
-          >
-            { subscription ? subscription : 'Subscription options'}
+        >
+          { subscription || 'Subscription options'}
         </Button>
-      )}>
+      )}
+    >
       <ActionList
-        items={ [{ content: onetime, onAction: () => setSubscriptionChange(onetime) }].concat(options.map((el) => {
-          return { 
-            content: el, 
-            onAction: () => setSubscriptionChange(el),
-          }
-        }))}
+        items={[{ content: onetime, onAction: () => setSubscriptionChange(onetime) }].concat(options.map((el) => ({
+          content: el,
+          onAction: () => setSubscriptionChange(el),
+        })))}
       />
     </Popover>
   );
-}
+};

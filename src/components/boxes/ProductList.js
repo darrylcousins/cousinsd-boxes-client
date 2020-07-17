@@ -20,11 +20,10 @@ const ListWrapper = styled.div`
 `;
 
 export const ProductList = ({ type }) => {
-  
   let title;
   let status;
 
-  switch(type) {
+  switch (type) {
     case 'including':
       status = 'success';
       title = 'box products';
@@ -49,7 +48,7 @@ export const ProductList = ({ type }) => {
 
         const products = type === 'including'
           ? data.current.including.concat(data.current.addons)
-          : data.current[type]
+          : data.current[type];
 
         if (products.length) {
           return (
@@ -57,21 +56,20 @@ export const ProductList = ({ type }) => {
               <Subheading>{title}</Subheading>
               <Spacer />
               <Stack
-                spacing='extraTight'
+                spacing="extraTight"
               >
-                { products.map(el => <Product key={el.id} product={el} type={type} data={data} /> ) }
+                { products.map((el) => <Product key={el.id} product={el} type={type} data={data} />) }
               </Stack>
             </ListWrapper>
           );
-        } else {
-          return (
-            <div style={{ marginBottom: '1rem' }}>
-              &nbsp;
-            </div>
-          );
         }
+        return (
+          <div style={{ marginBottom: '1rem' }}>
+              &nbsp;
+          </div>
+        );
       }}
     </Query>
   );
-}
+};
 // products.map((el) => <Product key={el.id} product={el} type={type} /> )
