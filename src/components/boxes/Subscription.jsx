@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import {
   ActionList,
   Button,
@@ -6,11 +7,11 @@ import {
 } from '@shopify/polaris';
 import { SUBSCRIPTIONS } from '../../config';
 
-export const Subscription = ({ state, handleChange }) => {
+export default function Subscription({ state, handleChange }) {
   const [popoverActive, setPopoverActive] = useState(false);
   const togglePopoverActive = useCallback(
-    () => setPopoverActive((popoverActive) => !popoverActive),
-    [],
+    () => setPopoverActive(() => !popoverActive),
+    [popoverActive],
   );
 
   const [subscription, setSubscription] = useState(state);
@@ -40,11 +41,22 @@ export const Subscription = ({ state, handleChange }) => {
       )}
     >
       <ActionList
-        items={[{ content: onetime, onAction: () => setSubscriptionChange(onetime) }].concat(options.map((el) => ({
-          content: el,
-          onAction: () => setSubscriptionChange(el),
-        })))}
+        items={[
+          {
+            content: onetime,
+            onAction: () => setSubscriptionChange(onetime),
+          },
+        ]
+          .concat(options.map((el) => ({
+            content: el,
+            onAction: () => setSubscriptionChange(el),
+          })))}
       />
     </Popover>
   );
+}
+
+Subscription.propTypes = {
+  state: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
 };

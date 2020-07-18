@@ -2,17 +2,18 @@ import React, { useEffect } from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { Client } from '../graphql/client';
 import { makeInitialState } from '../lib';
-import { Loader } from './common/Loader';
-import { Error } from './common/Error';
-import { Get } from './common/Get';
-import { App } from './App';
+import Loader from './common/Loader';
+import Error from './common/Error';
+import Get from './common/Get';
+import App from './App';
 import {
   GET_INITIAL,
   GET_CURRENT_SELECTION,
 } from '../graphql/local-queries';
 import { SUBSCRIPTIONS, LABELKEYS } from '../config';
 
-export const AppWrapper = () => {
+export default function AppWrapper() {
+
   const shopify_id = parseInt(document.querySelector('form[action="/cart/add"]')
     .getAttribute('id').split('_')[2]);
 

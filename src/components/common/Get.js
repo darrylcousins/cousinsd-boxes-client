@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
-export const Get = ({ url, children }) => {
+export default function Get({ url, children }) {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,4 +24,9 @@ export const Get = ({ url, children }) => {
     return children({ response, error, loading });
   }
   return { response, error, loading };
+}
+
+Get.propTypes = {
+  url: PropTypes.string.isRequired,
+  children: PropTypes.func.isRequired,
 };

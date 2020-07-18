@@ -6,19 +6,18 @@ import {
 } from '@shopify/polaris';
 import { Query } from '@apollo/react-components';
 import { useApolloClient } from '@apollo/client';
-import { Loader } from '../common/Loader';
-import { Error } from '../common/Error';
-import { nameSort, numberFormat, updateTotalPrice } from '../../lib';
+import Loader from '../common/Loader';
+import Error from '../common/Error';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
-export const SelectAddons = () => {
-  /* XXX products are current.exaddons */
+export default function SelectDislikes() {
+  /* XXX products are current.including */
 
   /* action select stuff */
   const [selectActive, setSelectActive] = useState(false);
   const toggleSelectActive = useCallback(
-    () => setSelectActive((selectActive) => !selectActive),
-    [],
+    () => setSelectActive(() => !selectActive),
+    [selectActive],
   );
   const activator = (
     <Button
@@ -26,28 +25,22 @@ export const SelectAddons = () => {
       disclosure
       fullWidth
     >
-      Select items you&apos;d like to add to the box
+      Select items you&apos;d prefer not to receive
     </Button>
   );
   /* end action select stuff */
 
   const client = useApolloClient();
 
-  const handleAction = ({ product }) => {
-    const data = client.readQuery({
-      query: GET_CURRENT_SELECTION,
-    });
+  const handleAction = ({ product, data }) => {
     toggleSelectActive();
     const current = { ...data.current };
-    current.exaddons = current.exaddons.filter((el) => el.id !== product.id);
-    current.addons = current.addons.concat([product]);
-    current.addons.sort(nameSort);
+    current.including = current.including.filter((el) => el.id !== product.id);
+    current.dislikes = current.dislikes.concat([product]);
     client.writeQuery({
       query: GET_CURRENT_SELECTION,
       data: { current },
     });
-
-    updateTotalPrice(client);
   };
 
   return (
@@ -57,7 +50,7 @@ export const SelectAddons = () => {
       {({ loading, error, data }) => {
         if (loading) return <Loader lines={2} />;
         if (error) return <Error message={error.message} />;
-        const products = data.current.exaddons;
+        const products = data.current.including;
 
         return (
           <Popover
@@ -70,8 +63,8 @@ export const SelectAddons = () => {
               items={
                 products.map((product) => (
                   {
-                    content: `${product.title} ${numberFormat(product.shopify_price * 0.01)}`,
-                    onAction: () => handleAction({ product }),
+                    content: product.title,
+                    onAction: () => handleAction({ product, data }),
                   }
                 ))
               }
@@ -81,4 +74,4 @@ export const SelectAddons = () => {
       }}
     </Query>
   );
-};
+}

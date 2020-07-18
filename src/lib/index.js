@@ -2,7 +2,6 @@ import { LABELKEYS } from '../config';
 import {
   PRODUCT_FULL_FRAGMENT,
   PRODUCT_FRAGMENT,
-  GET_INITIAL,
   GET_CURRENT_SELECTION,
 } from '../graphql/local-queries';
 
@@ -17,7 +16,7 @@ export const nameSort = (a, b) => {
 export const numberFormat = (amount, currencyCode = 'NZD') => {
   const amt = parseFloat(amount);
   let locale = 'en-NZ';
-  if (currencyCode == 'NZD') locale = 'en-NZ';
+  if (currencyCode === 'NZD') locale = 'en-NZ';
   return (
     new Intl.NumberFormat(locale, {
       style: 'currency',
@@ -27,15 +26,12 @@ export const numberFormat = (amount, currencyCode = 'NZD') => {
 };
 
 export const updateTotalPrice = (client) => {
-  const { initial } = client.readQuery({
-    query: GET_INITIAL,
-  });
   const { current } = client.readQuery({
     query: GET_CURRENT_SELECTION,
   });
 
   let price = current.box.shopify_price;
-  current.addons.map((el) => {
+  current.addons.forEach((el) => {
     price += el.quantity * el.shopify_price;
   });
   price = numberFormat(price * 0.01);
@@ -47,11 +43,6 @@ export const updateTotalPrice = (client) => {
 export const dateToISOString = (date) => {
   date.setTime(date.getTime() + (12 * 60 * 60 * 1000));
   return date.toISOString().slice(0, 10); // try this out later
-};
-
-const arrSum = (arr) => arr.reduce((a, b) => a + b, 0);
-export const checkLengths = (a, b) => {
-  if (!(arrSum(a) === arrSum(b))) throw 'Product lengths do not match!!!';
 };
 
 export const makeCurrent = ({ current, client }) => {
@@ -140,19 +131,18 @@ export const toHandle = (title) => title.replace(' ', '-').toLowerCase();
 
 export const stringToArray = (arr) => arr.split(',')
   .map((el) => {
-    const matches = el.matchAll(/\(\d+\)/g);
-    if (matches) {
-      let res;
-      for (res of matches) continue;
-      if (res) return el.slice(0, res.index).trim();
+    const str = el.trim();
+    const match = str.match(/\(\d+\)$/);
+    if (match) {
+      return str.slice(0, match.index).trim();
     }
     return el.trim();
   })
-  .filter((el) => el != '')
+  .filter((el) => el !== '')
   .map((el) => toHandle(el));
 
 export const makeInitialState = ({ response, path }) => {
-  const [delivery_date, p_in, p_add, p_dislikes, subscribed, addprod] = LABELKEYS;
+  const [deliveryDate, productsIn, productsAdd, productsDislike, subscribed, exAddOns] = LABELKEYS;
 
   const priceEl = document.querySelector('span[data-regular-price]');
   const price = parseFloat(priceEl.innerHTML.trim().slice(1)) * 100;
@@ -171,24 +161,24 @@ export const makeInitialState = ({ response, path }) => {
     is_loaded: false,
   };
 
-  console.log(response);
+  // console.log(response);
 
   if (response.items) {
     response.items.forEach((el) => {
-      if (el.product_type == 'Veggie Box' && path.indexOf(el.handle)) {
-        const { total_price } = response; // true total including addons
-        const shopify_title = el.title;
-        const shopify_id = el.product_id;
-        const delivered = el.properties[delivery_date];
+      if (el.product_type === 'Veggie Box' && path.indexOf(el.handle)) {
+        const totalPrice = response.total_price; // true total including addons
+        const shopifyTitle = el.title;
+        const shopifyId = el.product_id;
+        const delivered = el.properties[deliveryDate];
         const subscription = subscribed in el.properties ? el.properties[subscribed] : '';
-        const including = stringToArray(el.properties[p_in]);
-        const addons = stringToArray(el.properties[p_add]);
-        const dislikes = stringToArray(el.properties[p_dislikes]);
+        const including = stringToArray(el.properties[productsIn]);
+        const addons = stringToArray(el.properties[productsAdd]);
+        const dislikes = stringToArray(el.properties[productsDislike]);
         cart = Object.assign(cart, {
-          total_price,
+          total_price: totalPrice,
           delivered,
-          shopify_id,
-          shopify_title,
+          shopify_id: shopifyId,
+          shopify_title: shopifyTitle,
           including,
           addons,
           dislikes,
@@ -198,13 +188,13 @@ export const makeInitialState = ({ response, path }) => {
       }
     });
     response.items.forEach((el) => {
-      if (el.product_type == 'Box Produce') {
+      if (el.product_type === 'Box Produce') {
         // Delivery Date: Wed Jul 22 2020
         // Add on product to: Box title
         if (cart.addons.indexOf(el.handle) > -1) {
           const props = el.properties;
-          if (addprod in props && delivery_date in props) {
-            if (props[delivery_date] === cart.delivered && props[addprod] === cart.shopify_title) {
+          if (exAddOns in props && deliveryDate in props) {
+            if (props[deliveryDate] === cart.delivered && props[exAddOns] === cart.shopify_title) {
               cart.quantities.push({
                 handle: el.handle,
                 quantity: el.quantity,

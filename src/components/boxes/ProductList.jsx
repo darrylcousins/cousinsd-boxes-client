@@ -1,14 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Stack,
   Subheading,
 } from '@shopify/polaris';
 import { Query } from '@apollo/react-components';
 import styled from 'styled-components';
-import { Loader } from '../common/Loader';
-import { Error } from '../common/Error';
-import { Spacer } from '../common/Spacer';
-import { Product } from './Product';
+import Loader from '../common/Loader';
+import Error from '../common/Error';
+import Spacer from '../common/Spacer';
+import Product from './Product';
 import {
   GET_CURRENT_SELECTION,
 } from '../../graphql/local-queries';
@@ -19,22 +20,21 @@ const ListWrapper = styled.div`
   padding-bottom: 1em;
 `;
 
-export const ProductList = ({ type }) => {
+export default function ProductList({ type }) {
   let title;
-  let status;
 
   switch (type) {
     case 'including':
-      status = 'success';
       title = 'box products';
       break;
     case 'dislikes':
-      status = 'warning';
       title = 'dislikes';
       break;
     case 'exaddons':
-      status = 'attention';
       title = 'available addons';
+      break;
+    default:
+      title = null;
       break;
   }
 
@@ -58,7 +58,14 @@ export const ProductList = ({ type }) => {
               <Stack
                 spacing="extraTight"
               >
-                { products.map((el) => <Product key={el.id} product={el} type={type} data={data} />) }
+                { products.map((el) => (
+                  <Product
+                    key={el.id}
+                    product={el}
+                    type={type}
+                    data={data}
+                  />
+                )) }
               </Stack>
             </ListWrapper>
           );
@@ -71,5 +78,8 @@ export const ProductList = ({ type }) => {
       }}
     </Query>
   );
+}
+
+ProductList.propTypes = {
+  type: PropTypes.string.isRequired,
 };
-// products.map((el) => <Product key={el.id} product={el} type={type} /> )

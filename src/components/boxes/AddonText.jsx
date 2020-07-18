@@ -6,14 +6,14 @@ import {
 import { Query } from '@apollo/react-components';
 import { useApolloClient } from '@apollo/client';
 import styled from 'styled-components';
-import { AddonQuantity } from './AddonQuantity';
-import { Spacer } from '../common/Spacer';
-import { Loader } from '../common/Loader';
-import { Error } from '../common/Error';
+import AddonQuantity from './AddonQuantity';
+import Spacer from '../common/Spacer';
+import Loader from '../common/Loader';
+import Error from '../common/Error';
 import { nameSort, updateTotalPrice } from '../../lib';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
-export const AddonText = () => {
+export default function AddonText() {
   const ThirdWidth = styled.div`
     width: 30%;
   `;
@@ -63,9 +63,8 @@ export const AddonText = () => {
                       connectedRight={(
                         <ThirdWidth>
                           <AddonQuantity
-                            qty={el.quantity.toString()}
-                            id={el.id}
-                            data={data}
+                            qty={el.quantity}
+                            id={parseInt(el.id, 10)}
                           />
                         </ThirdWidth>
                     )}
@@ -81,4 +80,4 @@ export const AddonText = () => {
       }}
     </Query>
   );
-};
+}

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ProductWrapper = styled.div` 
+const ProductWrapper = styled.div` 
   font-size: 0.95em;
   margin-bottom: 0.25em;
   cursor: pointer;
@@ -26,4 +26,5 @@ export const ProductWrapper = styled.div`
   color: ${(props) => (props.isAddOn ? '#000033' : '#001a00')};
   font-weight: 400;
 `;
-//
+
+export default ProductWrapper;

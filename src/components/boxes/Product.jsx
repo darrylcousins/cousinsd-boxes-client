@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useApolloClient } from '@apollo/client';
 import { numberFormat, updateTotalPrice } from '../../lib';
-import { ProductWrapper } from './ProductWrapper';
+import ProductWrapper from './ProductWrapper';
+import { CurrentPropTypes } from '../../graphql/init';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 const Cancel = styled.span` 
@@ -10,17 +12,16 @@ const Cancel = styled.span`
   padding-left: 0.5em;
 `;
 
-export const Product = ({ product, type, data }) => {
+export default function Product({ product, type, data }) {
   const price = product.quantity * product.shopify_price;
-  const productprice = product.isAddOn ? numberFormat(parseInt(price) * 0.01) : '';
+  const productprice = product.isAddOn ? numberFormat(parseInt(price, 10) * 0.01) : '';
   const quantity = product.quantity > 1 ? ` (${product.quantity}) ` : ' ';
   const removable = (product.isAddOn && type === 'including') || type === 'dislikes';
   const icon = removable ? <Cancel>&#215;</Cancel> : '';
 
-  // if (product.id === '110') console.log(Client.cache.data.data);
   const client = useApolloClient();
 
-  const handleRemoveProduct = ({ product }) => {
+  const handleRemoveProduct = () => {
     let to;
     let from;
     if (type === 'dislikes') {
@@ -60,7 +61,12 @@ export const Product = ({ product, type, data }) => {
     );
   }
   return (
-    <div onClick={() => handleRemoveProduct({ product })}>
+    <div
+      tabIndex={product.id}
+      role="button"
+      onKeyDown={handleRemoveProduct}
+      onClick={handleRemoveProduct}
+    >
       <ProductWrapper
         isAddOn={product.isAddOn}
         removable={removable}
@@ -72,4 +78,18 @@ export const Product = ({ product, type, data }) => {
       </ProductWrapper>
     </div>
   );
+}
+
+Product.propTypes = {
+  product: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    isAddOn: PropTypes.bool.isRequired,
+    quantity: PropTypes.number.isRequired,
+    shopify_price: PropTypes.number.isRequired,
+  }).isRequired,
+  data: PropTypes.shape({
+    current: PropTypes.shape(CurrentPropTypes),
+  }).isRequired,
+  type: PropTypes.string.isRequired,
 };

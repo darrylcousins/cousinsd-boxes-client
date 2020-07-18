@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { AppProvider } from '@shopify/polaris';
 import enTranslations from '@shopify/polaris/locales/en.json';
 
-import { AppWrapper } from './components/AppWrapper';
+import AppWrapper from './components/AppWrapper';
 
 const form = document.querySelector('form[action="/cart/add"]');
 if (form) {

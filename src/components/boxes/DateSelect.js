@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import {
   Banner,
   Button,
@@ -6,7 +7,7 @@ import {
   ActionList,
 } from '@shopify/polaris';
 
-export const DateSelect = ({ initialData, boxes, onSelect }) => {
+export default function DateSelect({ initialData, boxes, onSelect }) {
   /* delivery date stuff */
   const [deliveryDate, setDeliveryDate] = useState(initialData.delivered);
   /* end delivery date stuff */
@@ -101,4 +102,10 @@ export const DateSelect = ({ initialData, boxes, onSelect }) => {
       </Popover>
     </>
   );
+}
+
+DateSelect.propTypes = {
+  initialData: PropTypes.object,
+  boxes: PropTypes.array,
+  onSelect: PropTypes.func,
 };

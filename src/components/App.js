@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { Query } from '@apollo/react-components';
 import { Client } from '../graphql/client';
 import { SHOP_ID } from '../config';
-import { Loader } from './common/Loader';
-import { Error } from './common/Error';
-import { DateSelect } from './boxes/DateSelect';
-import { Subscription } from './boxes/Subscription';
-import { Box } from './boxes/Box';
-import { Spacer } from './common/Spacer';
+import Loader from './common/Loader';
+import Error from './common/Error';
+import DateSelect from './boxes/DateSelect';
+import Subscription from './boxes/Subscription';
+import Box from './boxes/Box';
+import Spacer from './common/Spacer';
 import { makeCurrent, numberFormat } from '../lib';
 import {
   GET_BOXES,
@@ -17,7 +17,7 @@ import {
   GET_CURRENT_SELECTION,
 } from '../graphql/local-queries';
 
-export const App = ({ shopifyId }) => {
+export default function App({ shopifyId }) {
   /* XXX my idea is that we can use the initial data not only for reloading a
    * cart item but also for subscriptions
    */
