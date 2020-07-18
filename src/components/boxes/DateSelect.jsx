@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Banner,
@@ -6,6 +6,7 @@ import {
   Popover,
   ActionList,
 } from '@shopify/polaris';
+import { InitialPropType, BoxPropType } from '../../graphql/init';
 
 export default function DateSelect({ initialData, boxes, onSelect }) {
   /* delivery date stuff */
@@ -15,8 +16,8 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
   /* action select stuff */
   const [selectActive, setSelectActive] = useState(false);
   const toggleSelectActive = useCallback(
-    () => setSelectActive((selectActive) => !selectActive),
-    [],
+    () => setSelectActive(() => !selectActive),
+    [selectActive],
   );
 
   const activator = (
@@ -37,11 +38,12 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
   };
 
   useEffect(() => {
+    
     if (initialData.delivered.length > 0) {
       handleDateSelect(initialData);
-    } else if (boxes.length == 1) {
+    } else if (boxes.length === 1) {
       const data = Object.assign(initialData, {
-        delivered: new Date(parseInt(boxes[0].delivered)).toDateString(),
+        delivered: new Date(parseInt(boxes[0].delivered, 10)).toDateString(),
         shopify_id: boxes[0].shopify_id,
         box_id: boxes[0].id,
         shopify_title: boxes[0].shopify_title,
@@ -81,10 +83,10 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
           items={
             boxes.map((item) => (
               {
-                content: new Date(parseInt(item.delivered)).toDateString(),
+                content: new Date(parseInt(item.delivered, 10)).toDateString(),
                 onAction: () => handleDateSelect(Object.assign(initialData, {
                   shopify_title: item.shopify_title,
-                  delivered: new Date(parseInt(item.delivered)).toDateString(),
+                  delivered: new Date(parseInt(item.delivered, 10)).toDateString(),
                   shopify_id: item.shopify_id,
                   box_id: item.id,
                   /* reset because selected different box */
@@ -105,7 +107,7 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
 }
 
 DateSelect.propTypes = {
-  initialData: PropTypes.object,
-  boxes: PropTypes.array,
-  onSelect: PropTypes.func,
+  initialData: PropTypes.shape(InitialPropType).isRequired,
+  boxes: PropTypes.arrayOf(BoxPropType).isRequired,
+  onSelect: PropTypes.func.isRequired,
 };

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 export const initial = {
-  box_id: 0,
+  box_id: '',
   delivered: '',
   including: [],
   addons: [],
@@ -24,12 +24,35 @@ export const current = {
   subscription: '',
 };
 
-export const InitialPropTypes = {
-  box_id: PropTypes.number.isRequired,
+export const ProductPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  available: PropTypes.bool.isRequired,
+  shopify_gid: PropTypes.string.isRequired,
+  shopify_id: PropTypes.number.isRequired,
+  shopify_handle: PropTypes.string.isRequired,
+  shopify_variant_id: PropTypes.number.isRequired,
+  shopify_price: PropTypes.number.isRequired,
+});
+
+export const BoxPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
   delivered: PropTypes.string.isRequired,
-  including: PropTypes.array.isRequired,
-  addons: PropTypes.array.isRequired,
-  dislikes: PropTypes.array.isRequired,
+  shopify_gid: PropTypes.string.isRequired,
+  shopify_id: PropTypes.number.isRequired,
+  shopify_handle: PropTypes.string.isRequired,
+  shopify_title: PropTypes.string.isRequired,
+  shopify_price: PropTypes.number.isRequired,
+  products: PropTypes.arrayOf(ProductPropType).isRequired,
+  addOnProducts: PropTypes.arrayOf(ProductPropType).isRequired,
+});
+
+export const InitialPropType = {
+  box_id: PropTypes.string.isRequired,
+  delivered: PropTypes.string.isRequired,
+  including: PropTypes.arrayOf(PropTypes.string).isRequired,
+  addons: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dislikes: PropTypes.arrayOf(PropTypes.string).isRequired,
   shopify_title: PropTypes.string.isRequired,
   shopify_id: PropTypes.number.isRequired,
   subscription: PropTypes.string.isRequired,
@@ -38,11 +61,11 @@ export const InitialPropTypes = {
   is_loaded: PropTypes.bool.isRequired,
 };
 
-export const CurrentPropTypes = {
-  box: PropTypes.object.isRequired,
+export const CurrentPropType = {
+  box: PropTypes.shape(BoxPropType).isRequired,
   delivered: PropTypes.string.isRequired,
-  including: PropTypes.array.isRequired,
-  addons: PropTypes.array.isRequired,
-  dislikes: PropTypes.array.isRequired,
+  including: PropTypes.arrayOf(ProductPropType).isRequired,
+  addons: PropTypes.arrayOf(ProductPropType).isRequired,
+  dislikes: PropTypes.arrayOf(ProductPropType).isRequired,
   subscription: PropTypes.string.isRequired,
 };

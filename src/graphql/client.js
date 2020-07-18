@@ -11,13 +11,15 @@ const cache = new InMemoryCache({
 const resolvers = {
 };
 
-export const Client = new ApolloClient({
+const Client = new ApolloClient({
   link: new HttpLink({ uri: `${HOST}/local_graphql` }),
   cache,
+  /*
   onError: ({ networkError, graphQLErrors }) => {
     console.log('graphQLError', JSON.stringify(graphQLErrors, null, 2));
     console.log('networkError', JSON.stringify(networkError, null, 2));
   },
+  */
   resolvers,
   typeDefs,
 });
@@ -35,3 +37,5 @@ Client.writeQuery({
     current,
   },
 });
+
+export default Client;

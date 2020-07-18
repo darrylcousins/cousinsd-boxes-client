@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 export default function Get({ url, children }) {
@@ -14,11 +14,11 @@ export default function Get({ url, children }) {
           setResponse(result);
           setLoading(false);
         },
-        (error) => {
-          setError(error);
+        (err) => {
+          setError(err);
         },
       );
-  }, []);
+  }, [url]);
 
   if (typeof children === 'function') {
     return children({ response, error, loading });

@@ -148,14 +148,14 @@ export const makeInitialState = ({ response, path }) => {
   const price = parseFloat(priceEl.innerHTML.trim().slice(1)) * 100;
 
   let cart = {
-    box_id: 0,
+    box_id: '',
     delivered: '',
     including: [],
     addons: [],
     dislikes: [],
     shopify_title: '',
     shopify_id: 0,
-    subscription: false,
+    subscription: '',
     total_price: price,
     quantities: [],
     is_loaded: false,

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from '@apollo/client';
-import { Client } from '../graphql/client';
+import Client from '../graphql/client';
 import { makeInitialState } from '../lib';
 import Loader from './common/Loader';
 import Error from './common/Error';
@@ -10,15 +10,14 @@ import {
   GET_INITIAL,
   GET_CURRENT_SELECTION,
 } from '../graphql/local-queries';
-import { SUBSCRIPTIONS, LABELKEYS } from '../config';
+import { SUBSCRIPTIONS } from '../config';
 
 export default function AppWrapper() {
-
-  const shopify_id = parseInt(document.querySelector('form[action="/cart/add"]')
-    .getAttribute('id').split('_')[2]);
+  const shopifyId = parseInt(document.querySelector('form[action="/cart/add"]')
+    .getAttribute('id').split('_')[2], 10);
 
   function postFetch(url, data) {
-    console.log('sending to ', url, data);
+    // console.log('sending to ', url, data);
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -41,8 +40,13 @@ export default function AppWrapper() {
     const cartPopup = document.querySelector('div[data-cart-popup-wrapper');
     const cartPopupCount = cartPopup.querySelector('span[data-cart-popup-quantity]');
     const cartPopupCountCart = cartPopup.querySelector('span[data-cart-popup-cart-quantity]');
-    let initialCount = parseInt(cartCount.innerHTML.trim());
-    if (isNaN(initialCount)) initialCount = 0;
+    const currentCount = cartCount.innerHTML.trim();
+    let initialCount;
+    if (currentCount === '') {
+      initialCount = 0;
+    } else {
+      initialCount = parseInt(currentCount, 10);
+    }
 
     const submitHandler = (e) => {
       buttonLoader.classList.remove('hide');
@@ -96,12 +100,12 @@ export default function AppWrapper() {
         properties,
       });
 
-      const onFinish = (data, items) => {
-        console.log('returned from post to cart', data);
+      const onFinish = (data, values) => {
+        // console.log('returned from post to cart', data);
         cartIcon.classList.remove('hide');
         cartPopup.classList.remove('cart-popup-wrapper--hidden');
         buttonLoader.classList.add('hide');
-        const itemCount = items.map((el) => el.quantity).reduce((acc, curr) => acc + curr);
+        const itemCount = values.map((el) => el.quantity).reduce((acc, curr) => acc + curr);
         cartCount.innerHTML = itemCount;
         cartPopupCount.innerHTML = itemCount;
         cartPopupCountCart.innerHTML = itemCount;
@@ -123,31 +127,31 @@ export default function AppWrapper() {
         });
         button.querySelector('[data-add-to-cart-text]').innerHTML = 'Update selection';
       };
-      console.log('in action', initial);
+      // console.log('in action', initial);
 
       // XXX doing an update so delete items first
       // XXX will need a closer look when loading subscriptions
       if (initial.is_loaded) {
         const update = { updates: {} };
-        let total_quantity = 1; // one for the main box the rest addons
-        initial.quantities.forEach(({ handle, quantity, variant_id }) => {
-          update.updates[variant_id] = 0;
-          total_quantity += quantity;
+        let totalQuantity = 1; // one for the main box the rest addons
+        initial.quantities.forEach(({ quantity, variant_id: variantId }) => {
+          update.updates[variantId] = 0;
+          totalQuantity += quantity;
         });
         update.updates[option.value] = 0;
         postFetch('/cart/update.js', update)
-          .then((data) => {
-            console.log('returned from cart/update', data);
-            cartCount.innerHTML = initialCount - total_quantity;
+          .then(() => {
+            // console.log('returned from cart/update', res);
+            cartCount.innerHTML = initialCount - totalQuantity;
             postFetch('/cart/add.js', { items })
-              .then((data) => {
-                onFinish(data, items);
+              .then((res) => {
+                onFinish(res, items);
               });
           });
       } else {
         postFetch('/cart/add.js', { items })
-          .then((data) => {
-            onFinish(data, items);
+          .then((res) => {
+            onFinish(res, items);
           });
       }
       e.preventDefault();
@@ -165,7 +169,7 @@ export default function AppWrapper() {
   return (
     <ApolloProvider client={Client}>
       <Get
-        url="/cart.js"
+        url="/cart-empty.js"
       >
         {({ loading, error, response }) => {
           if (loading) return <Loader lines={4} />;
@@ -187,9 +191,9 @@ export default function AppWrapper() {
             Client.cache.writeQuery({ query: GET_INITIAL, data: { initial } });
           }
 
-          return <App shopifyId={shopify_id} />;
+          return <App shopifyId={shopifyId} />;
         }}
       </Get>
     </ApolloProvider>
   );
-};
+}

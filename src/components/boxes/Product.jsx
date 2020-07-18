@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useApolloClient } from '@apollo/client';
 import { numberFormat, updateTotalPrice } from '../../lib';
 import ProductWrapper from './ProductWrapper';
-import { CurrentPropTypes } from '../../graphql/init';
+import { CurrentPropType, BoxPropType, ProductPropType } from '../../graphql/init';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
 const Cancel = styled.span` 
@@ -82,14 +82,21 @@ export default function Product({ product, type, data }) {
 
 Product.propTypes = {
   product: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     isAddOn: PropTypes.bool.isRequired,
     quantity: PropTypes.number.isRequired,
     shopify_price: PropTypes.number.isRequired,
   }).isRequired,
   data: PropTypes.shape({
-    current: PropTypes.shape(CurrentPropTypes),
+    current: PropTypes.shape({
+      box: PropTypes.object.isRequired,
+      delivered: PropTypes.string.isRequired,
+      including: PropTypes.arrayOf(ProductPropType).isRequired,
+      addons: PropTypes.arrayOf(ProductPropType).isRequired,
+      dislikes: PropTypes.arrayOf(ProductPropType).isRequired,
+      subscription: PropTypes.string.isRequired,
+    }),
   }).isRequired,
   type: PropTypes.string.isRequired,
 };
