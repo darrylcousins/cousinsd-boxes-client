@@ -5,7 +5,9 @@ import { GET_INITIAL, GET_CURRENT_SELECTION } from './local-queries';
 import { initial, current } from './init';
 
 const cache = new InMemoryCache({
-  dataIdFromObject: (object) => object.id,
+  // caution required here - got some grief when changing this
+  // default value works well enough `${o.__typename}:${o.id},`
+  //dataIdFromObject: o => `${o.__typename}:${o.id},`
 });
 
 const resolvers = {

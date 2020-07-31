@@ -6,8 +6,8 @@ import {
 } from '../graphql/local-queries';
 
 export const nameSort = (a, b) => {
-  const prodA = a.title.toUpperCase();
-  const prodB = b.title.toUpperCase();
+  const prodA = a.shopify_title.toUpperCase();
+  const prodB = b.shopify_title.toUpperCase();
   if (prodA > prodB) return 1;
   if (prodA < prodB) return -1;
   return 0;
@@ -30,7 +30,7 @@ export const updateTotalPrice = (client) => {
     query: GET_CURRENT_SELECTION,
   });
 
-  let price = current.box.shopify_price;
+  let price = current.box.shopifyBox.shopify_price;
   current.addons.forEach((el) => {
     price += el.quantity * el.shopify_price;
   });
@@ -62,8 +62,9 @@ export const makeCurrent = ({ current, client }) => {
       if (current.including.indexOf(item.shopify_handle) > -1) {
         includeIds.push(item.id);
       }
+      const objectId = `Product:${item.id}`
       client.writeFragment({
-        id: item.id,
+        id: objectId,
         fragment: PRODUCT_FRAGMENT,
         data: {
           quantity,
@@ -72,7 +73,7 @@ export const makeCurrent = ({ current, client }) => {
       });
       // return box.products.filter(el => el.id === item.id)[0];
       return client.readFragment({
-        id: item.id,
+        id: objectId,
         fragment: PRODUCT_FULL_FRAGMENT,
       });
     });
@@ -83,8 +84,9 @@ export const makeCurrent = ({ current, client }) => {
       if (current.including.indexOf(item.shopify_handle) > -1) {
         includeIds.push(item.id);
       }
+      const objectId = `Product:${item.id}`
       client.writeFragment({
-        id: item.id,
+        id: objectId,
         fragment: PRODUCT_FRAGMENT,
         data: {
           quantity,
@@ -93,7 +95,7 @@ export const makeCurrent = ({ current, client }) => {
       });
       // return box.addOnProducts.filter(el => el.id === item.id)[0];
       return client.readFragment({
-        id: item.id,
+        id: objectId,
         fragment: PRODUCT_FULL_FRAGMENT,
       });
     });
@@ -123,23 +125,25 @@ export const makeCurrent = ({ current, client }) => {
     dislikes,
     subscription: current.subscription,
   };
-  // console.log('box update', JSON.stringify(update, null, 1));
   return { current: update };
 };
 
-export const toHandle = (title) => title.replace(' ', '-').toLowerCase();
+export const toHandle = (title) => title.replace(/ /g, '-').toLowerCase();
 
-export const stringToArray = (arr) => arr.split(',')
-  .map((el) => {
-    const str = el.trim();
-    const match = str.match(/\(\d+\)$/);
-    if (match) {
-      return str.slice(0, match.index).trim();
-    }
-    return el.trim();
-  })
-  .filter((el) => el !== '')
-  .map((el) => toHandle(el));
+export const stringToArray = (arr) => {
+  const result = arr.split(',')
+    .map((el) => {
+      const str = el.trim();
+      const match = str.match(/\(\d+\)$/);
+      if (match) {
+        return str.slice(0, match.index).trim();
+      }
+      return el.trim();
+    })
+    .filter((el) => el !== '')
+    .map((el) => toHandle(el));
+  return result;
+}
 
 export const makeInitialState = ({ response, path }) => {
   const [deliveryDate, productsIn, productsAdd, productsDislike, subscribed, exAddOns] = LABELKEYS;
@@ -161,11 +165,11 @@ export const makeInitialState = ({ response, path }) => {
     is_loaded: false,
   };
 
-  // console.log(response);
+  //console.log(response);
 
   if (response.items) {
     response.items.forEach((el) => {
-      if (el.product_type === 'Veggie Box' && path.indexOf(el.handle)) {
+      if (el.product_type === 'Container Box' && path.indexOf(el.handle)) {
         const totalPrice = response.total_price; // true total including addons
         const shopifyTitle = el.title;
         const shopifyId = el.product_id;

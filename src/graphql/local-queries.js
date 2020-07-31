@@ -42,7 +42,7 @@ export const PRODUCT_FRAGMENT = gql`
 export const PRODUCT_FULL_FRAGMENT = gql`
   fragment MyFullProduct on Product {
     id
-    title
+    shopify_title
     available
     shopify_gid
     shopify_id

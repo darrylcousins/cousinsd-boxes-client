@@ -15,6 +15,7 @@ export default function Get({ url, children }) {
           setLoading(false);
         },
         (err) => {
+          console.log(err);
           setError(err);
         },
       );

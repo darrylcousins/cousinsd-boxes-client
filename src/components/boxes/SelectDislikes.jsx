@@ -63,7 +63,7 @@ export default function SelectDislikes() {
               items={
                 products.map((product) => (
                   {
-                    content: product.title,
+                    content: product.shopify_title,
                     onAction: () => handleAction({ product, data }),
                   }
                 ))

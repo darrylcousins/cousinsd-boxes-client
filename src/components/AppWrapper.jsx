@@ -10,7 +10,6 @@ import {
   GET_INITIAL,
   GET_CURRENT_SELECTION,
 } from '../graphql/local-queries';
-import { SUBSCRIPTIONS } from '../config';
 
 export default function AppWrapper() {
   const shopifyId = parseInt(document.querySelector('form[action="/cart/add"]')
@@ -60,7 +59,7 @@ export default function AppWrapper() {
         query: GET_INITIAL,
       });
 
-      const title = current.box.shopify_title;
+      const title = current.box.shopifyBox.shopify_title;
       const { delivered } = current;
       const items = [];
 
@@ -76,11 +75,11 @@ export default function AppWrapper() {
       });
 
       const addons = current.addons.map((el) => {
-        if (el.quantity > 1) return `${el.title} (${el.quantity})`;
-        return el.title;
+        if (el.quantity > 1) return `${el.shopify_title} (${el.quantity})`;
+        return el.shopify_title;
       }).join(', ');
-      const removed = current.dislikes.map((el) => el.title).join(', ');
-      const including = current.including.map((el) => el.title).join(', ');
+      const removed = current.dislikes.map((el) => el.shopify_title).join(', ');
+      const including = current.including.map((el) => el.shopify_title).join(', ');
 
       const properties = {
         'Delivery Date': `${delivered}`,
@@ -90,9 +89,6 @@ export default function AppWrapper() {
       };
 
       const { subscription } = current;
-      if (SUBSCRIPTIONS.indexOf(subscription) > -1) {
-        properties.Subscription = subscription;
-      }
 
       items.push({
         quantity: 1,
@@ -154,6 +150,7 @@ export default function AppWrapper() {
             onFinish(res, items);
           });
       }
+      console.log('submitted to cart', JSON.stringify(items, null, 2));
       e.preventDefault();
       e.stopPropagation();
       return false;
@@ -169,7 +166,7 @@ export default function AppWrapper() {
   return (
     <ApolloProvider client={Client}>
       <Get
-        url="/cart-empty.js"
+        url="/cart.js"
       >
         {({ loading, error, response }) => {
           if (loading) return <Loader lines={4} />;
@@ -185,7 +182,9 @@ export default function AppWrapper() {
 
           // idea is that we can use initial also for subscriptions
           // this returns an empty initial state if no data
+          console.log('wtf');
           const initial = makeInitialState({ response, path });
+          console.log(initial);
 
           if (response) {
             Client.cache.writeQuery({ query: GET_INITIAL, data: { initial } });

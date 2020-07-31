@@ -5,9 +5,11 @@ import {
   Button,
   Popover,
 } from '@shopify/polaris';
-import { SUBSCRIPTIONS } from '../../config';
 
 export default function Subscription({ state, handleChange }) {
+  //TODO waiting for subscription package
+  return null;
+
   const [popoverActive, setPopoverActive] = useState(false);
   const togglePopoverActive = useCallback(
     () => setPopoverActive(() => !popoverActive),

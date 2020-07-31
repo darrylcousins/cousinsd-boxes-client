@@ -13,15 +13,15 @@ import Error from '../common/Error';
 import { nameSort, updateTotalPrice } from '../../lib';
 import { GET_CURRENT_SELECTION } from '../../graphql/local-queries';
 
+const ThirdWidth = styled.div`
+  width: 30%;
+`;
+
+const TwoThirdWidth = styled.div`
+  width: 100%;
+`;
+
 export default function AddonText() {
-  const ThirdWidth = styled.div`
-    width: 30%;
-  `;
-
-  const TwoThirdWidth = styled.div`
-    width: 100%;
-  `;
-
   const client = useApolloClient();
 
   const handleClearButton = ({ product }) => {
@@ -56,7 +56,7 @@ export default function AddonText() {
                   <Spacer />
                   <TwoThirdWidth>
                     <TextField
-                      value={el.title}
+                      value={el.shopify_title}
                       readOnly
                       clearButton
                       onClearButtonClick={() => handleClearButton({ product: el })}

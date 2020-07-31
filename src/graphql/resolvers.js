@@ -18,9 +18,9 @@ export const typeDefs = gql`
   type Initial {
     box_id: Int
     delivered: String
-    including: [Product]
-    addons: [Product]
-    dislikes: [Product]
+    including: [String]
+    addons: [String]
+    dislikes: [String]
     shopify_title: String
     shopify_id: Int
     subscription: String

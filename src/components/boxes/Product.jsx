@@ -53,7 +53,7 @@ export default function Product({ product, type, data }) {
         isAddOn={product.isAddOn}
         removable={removable}
       >
-        {product.title}
+        {product.shopify_title}
         {quantity}
         {productprice}
         {icon}
@@ -71,7 +71,7 @@ export default function Product({ product, type, data }) {
         isAddOn={product.isAddOn}
         removable={removable}
       >
-        {product.title}
+        {product.shopify_title}
         {quantity}
         {productprice}
         {icon}
@@ -83,7 +83,7 @@ export default function Product({ product, type, data }) {
 Product.propTypes = {
   product: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    shopify_title: PropTypes.string.isRequired,
     isAddOn: PropTypes.bool.isRequired,
     quantity: PropTypes.number.isRequired,
     shopify_price: PropTypes.number.isRequired,

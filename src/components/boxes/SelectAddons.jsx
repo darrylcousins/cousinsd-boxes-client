@@ -70,7 +70,7 @@ export default function SelectAddons() {
               items={
                 products.map((product) => (
                   {
-                    content: `${product.title} ${numberFormat(product.shopify_price * 0.01)}`,
+                    content: `${product.shopify_title} ${numberFormat(product.shopify_price * 0.01)}`,
                     onAction: () => handleAction({ product }),
                   }
                 ))

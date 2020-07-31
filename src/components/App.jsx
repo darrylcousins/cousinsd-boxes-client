@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Query } from '@apollo/react-components';
 import { useApolloClient } from '@apollo/client';
-import { SHOP_ID } from '../config';
+import { Button } from '@shopify/polaris';
 import Loader from './common/Loader';
 import Error from './common/Error';
 import DateSelect from './boxes/DateSelect';
@@ -60,8 +60,9 @@ export default function App({ shopifyId }) {
         }
 
         const input = {
-          ShopId: SHOP_ID,
-          shopify_id: shopifyId,
+          shopify_product_id: shopifyId,
+          limit: 5,
+          offset: 0,
         };
 
         return (
@@ -74,13 +75,14 @@ export default function App({ shopifyId }) {
               if (loading) return <Loader lines={4} />;
               if (error) return <Error message={error.message} />;
 
-              const boxes = data.getBoxesByShopifyId;
+              const boxes = data.getBoxesByShopifyBox.rows;
               const initialCopy = JSON.parse(JSON.stringify(initial));
 
               // we re running a stored box (cart or subscription)
               if (initialCopy.delivered.length > 0) {
-                const box = boxes.filter((el) => new Date(Date.parse((initialCopy.delivered)))
-                  .getTime() === parseInt(el.delivered, 10));
+                const box = boxes
+                  .filter((el) => new Date(initialCopy.delivered)
+                  .toDateString() === new Date(el.delivered).toDateString());
                 if (box.length > 0) initialCopy.box_id = box[0].id;
               }
 
@@ -96,19 +98,21 @@ export default function App({ shopifyId }) {
                   const start = {
                     box,
                     delivered: initialData.delivered,
-                    including: initialData.including,
-                    addons: initialData.addons,
+                    including: [...initialData.including],
+                    addons: [...initialData.addons],
                     exaddons: [],
-                    dislikes: initialData.dislikes,
-                    quantities: initialData.quantities,
+                    dislikes: [...initialData.dislikes],
+                    quantities: [...initialData.quantities],
                     subscription: initialData.subscription,
                   };
                   const { current } = makeCurrent({ current: start, client });
-                  console.log('current', current);
                   client.writeQuery({
                     query: GET_CURRENT_SELECTION,
                     data: { current },
                   });
+                  console.log('third read initial from client', client.readQuery({
+                    query: GET_INITIAL,
+                  }));
                 }
                 setLoaded(true);
 
@@ -141,14 +145,23 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
+                  <Spacer />
+                  <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.current, null, 2)) }>
+                    show current</Button>
+                  <Spacer />
+                  <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.initial, null, 2)) }>
+                    show initial</Button>
+                  <Spacer />
                   <DateSelect
                     boxes={boxes}
                     initialData={initialCopy}
                     onSelect={handleSelect}
                   />
-                  <Box
-                    loaded={loaded}
-                  />
+                  { loaded && 
+                    <Box
+                      loaded={loaded}
+                    />
+                  }
                   <Spacer />
                   <Subscription
                     state={initial.subscription}

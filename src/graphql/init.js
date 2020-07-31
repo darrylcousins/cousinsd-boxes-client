@@ -26,7 +26,7 @@ export const current = {
 
 export const ProductPropType = PropTypes.shape({
   id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  shopify_title: PropTypes.string.isRequired,
   available: PropTypes.bool.isRequired,
   shopify_gid: PropTypes.string.isRequired,
   shopify_id: PropTypes.number.isRequired,
@@ -35,16 +35,20 @@ export const ProductPropType = PropTypes.shape({
   shopify_price: PropTypes.number.isRequired,
 });
 
-export const BoxPropType = PropTypes.shape({
-  id: PropTypes.string.isRequired,
-  delivered: PropTypes.string.isRequired,
-  shopify_gid: PropTypes.string.isRequired,
-  shopify_id: PropTypes.number.isRequired,
+export const ShopifyBoxPropType = PropTypes.shape({
+  shopify_product_gid: PropTypes.string.isRequired,
+  shopify_product_id: PropTypes.number.isRequired,
   shopify_handle: PropTypes.string.isRequired,
   shopify_title: PropTypes.string.isRequired,
   shopify_price: PropTypes.number.isRequired,
+});
+
+export const BoxPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  delivered: PropTypes.string.isRequired,
   products: PropTypes.arrayOf(ProductPropType).isRequired,
   addOnProducts: PropTypes.arrayOf(ProductPropType).isRequired,
+  shopifyBox: ShopifyBoxPropType,
 });
 
 export const InitialPropType = {
@@ -53,6 +57,11 @@ export const InitialPropType = {
   including: PropTypes.arrayOf(PropTypes.string).isRequired,
   addons: PropTypes.arrayOf(PropTypes.string).isRequired,
   dislikes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  /*
+  including: PropTypes.arrayOf(ProductPropType).isRequired,
+  addons: PropTypes.arrayOf(ProductPropType).isRequired,
+  dislikes: PropTypes.arrayOf(ProductPropType).isRequired,
+  */
   shopify_title: PropTypes.string.isRequired,
   shopify_id: PropTypes.number.isRequired,
   subscription: PropTypes.string.isRequired,

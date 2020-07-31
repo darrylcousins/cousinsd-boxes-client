@@ -44,9 +44,9 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
     } else if (boxes.length === 1) {
       const data = Object.assign(initialData, {
         delivered: new Date(parseInt(boxes[0].delivered, 10)).toDateString(),
-        shopify_id: boxes[0].shopify_id,
+        shopify_id: boxes[0].shopifyBox.shopify_product_id,
         box_id: boxes[0].id,
-        shopify_title: boxes[0].shopify_title,
+        shopify_title: boxes[0].shopifyBox.shopify_title,
         /* reset because selected different box */
         including: [],
         dislikes: [],
@@ -83,11 +83,12 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
           items={
             boxes.map((item) => (
               {
-                content: new Date(parseInt(item.delivered, 10)).toDateString(),
+                content: new Date(item.delivered).toDateString(),
                 onAction: () => handleDateSelect(Object.assign(initialData, {
-                  shopify_title: item.shopify_title,
-                  delivered: new Date(parseInt(item.delivered, 10)).toDateString(),
-                  shopify_id: item.shopify_id,
+                  shopify_title: item.shopifyBox.shopify_title,
+                  //delivered: new Date(item.delivered).toDateString(),
+                  delivered: new Date(item.delivered).toDateString(),
+                  shopify_id: item.shopifyBox.shopify_product_id,
                   box_id: item.id,
                   /* reset because selected different box */
                   including: [],
