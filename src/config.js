@@ -1,5 +1,4 @@
 // export const SHOP = 'http://cousinsd-app-test.myshopify.com';
-export const SHOP_ID = 1;
 // export const HOST = 'https://fast-spire-96062.herokuapp.com';
 export const HOST = 'https://d814c6c8656e.ngrok.io';
 export const LABELKEYS = [

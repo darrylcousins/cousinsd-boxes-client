@@ -36,7 +36,8 @@ export const updateTotalPrice = (client) => {
   });
   price = numberFormat(price * 0.01);
 
-  const priceEl = document.querySelector('span[data-regular-price]');
+  console.log('updating price', price);
+  const priceEl = document.querySelector('span[class="price-item"]');
   if (priceEl) priceEl.innerHTML = price;
 };
 

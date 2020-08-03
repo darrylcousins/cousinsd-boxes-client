@@ -9,7 +9,7 @@ import DateSelect from './boxes/DateSelect';
 import Subscription from './boxes/Subscription';
 import Box from './boxes/Box';
 import Spacer from './common/Spacer';
-import { makeCurrent, numberFormat } from '../lib';
+import { makeCurrent, numberFormat, updateTotalPrice } from '../lib';
 import {
   GET_BOXES,
 } from '../graphql/queries';
@@ -76,6 +76,11 @@ export default function App({ shopifyId }) {
               if (error) return <Error message={error.message} />;
 
               const boxes = data.getBoxesByShopifyBox.rows;
+              if (!boxes || boxes.length === 0) {
+                const button = document.querySelector('button[name="add"]');
+                button.classList.add('hide');
+                button.classList.remove('btn');
+              }
               const initialCopy = JSON.parse(JSON.stringify(initial));
 
               // we re running a stored box (cart or subscription)
@@ -110,10 +115,9 @@ export default function App({ shopifyId }) {
                     query: GET_CURRENT_SELECTION,
                     data: { current },
                   });
-                  console.log('third read initial from client', client.readQuery({
-                    query: GET_INITIAL,
-                  }));
                 }
+                // update price as selection has changed
+                updateTotalPrice(client);
                 setLoaded(true);
 
                 /*
@@ -129,13 +133,24 @@ export default function App({ shopifyId }) {
                 /* get some existing form elements */
                 const button = document.querySelector('button[name="add"]');
                 button.removeAttribute('disabled');
+                button.classList.remove('hide');
+                button.classList.add('btn');
                 // loaded existing cart or subscription values
                 if (initial.is_loaded) {
                   button.querySelector('[data-add-to-cart-text]').innerHTML = 'Update selection';
                 }
               };
-              /*
-              */
+
+              const testMarkup = (
+                <>
+                  <Spacer />
+                  <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.current, null, 2)) }>
+                    show current</Button>
+                  <Spacer />
+                  <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.initial, null, 2)) }>
+                    show initial</Button>
+                </>
+              );
 
               return (
                 <div style={{
@@ -145,12 +160,6 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
-                  <Spacer />
-                  <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.current, null, 2)) }>
-                    show current</Button>
-                  <Spacer />
-                  <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.initial, null, 2)) }>
-                    show initial</Button>
                   <Spacer />
                   <DateSelect
                     boxes={boxes}

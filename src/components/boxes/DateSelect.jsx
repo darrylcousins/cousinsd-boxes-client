@@ -43,7 +43,7 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
       handleDateSelect(initialData);
     } else if (boxes.length === 1) {
       const data = Object.assign(initialData, {
-        delivered: new Date(parseInt(boxes[0].delivered, 10)).toDateString(),
+        delivered: new Date(boxes[0].delivered).toDateString(),
         shopify_id: boxes[0].shopifyBox.shopify_product_id,
         box_id: boxes[0].id,
         shopify_title: boxes[0].shopifyBox.shopify_title,
@@ -60,19 +60,25 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
   }, []);
 
   const ShowBanner = () => {
-    if (!deliveryDate) {
+    if (!deliveryDate && boxes.length > 0) {
       return (
         <div style={{ marginBottom: '1rem' }}>
           <Banner status="warning">Please choose a date for delivery</Banner>
         </div>
       );
-    }
+    };
+    if (boxes.length === 0) {
+      return (
+        <div style={{ marginBottom: '1rem' }}>
+          <Banner status="warning">No boxes are scheduled for delivery, please return again later.</Banner>
+        </div>
+      );
+    };
     return null;
   };
 
-  return (
-    <>
-      <ShowBanner />
+  const ShowSelect = () => {
+    if (boxes.length > 0) {
       <Popover
         fullWidth
         active={selectActive}
@@ -103,6 +109,14 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
           }
         />
       </Popover>
+    };
+    return null;
+  };
+
+  return (
+    <>
+      <ShowBanner />
+      <ShowSelect />
     </>
   );
 }
