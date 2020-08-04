@@ -1,6 +1,9 @@
 // export const SHOP = 'http://cousinsd-app-test.myshopify.com';
-// export const HOST = 'https://fast-spire-96062.herokuapp.com';
-export const HOST = 'https://d814c6c8656e.ngrok.io';
+//export const HOST = 'https://d814c6c8656e.ngrok.io';
+//import dotenv from 'dotenv';
+
+export const HOST = 'https://cousinsd-shopify-boxes-dev.herokuapp.com';
+
 export const LABELKEYS = [
   'Delivery Date',
   'Including',

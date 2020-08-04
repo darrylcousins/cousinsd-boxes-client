@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=local webpack-dev-server --config webpack.config.js",
-    "prebuild": "rimraf ./build",
     "watch": "webpack --config webpack.dev.js --progress --color",
+    "prebuild": "rimraf ./build",
     "build": "webpack --mode production --config webpack.prod.js --progress --color",
-    "component": "webpack --mode production --config webpack.component.js --progress --color",
+    "component": "webpack --env.APP_NAME=cousinsd-shopify-boxes-dev --mode production --config webpack.component.js --progress --color",
     "buildDev": "webpack --mode development --config webpack.dev.js --progress --color"
   },
   "keywords": [],

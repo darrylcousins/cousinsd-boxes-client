@@ -77,38 +77,40 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
     return null;
   };
 
-  const ShowSelect = () => {
+  const ShowSelect = ({boxes}) => {
     if (boxes.length > 0) {
-      <Popover
-        fullWidth
-        active={selectActive}
-        activator={activator}
-        onClose={toggleSelectActive}
-      >
-        <ActionList
-          items={
-            boxes.map((item) => (
-              {
-                content: new Date(item.delivered).toDateString(),
-                onAction: () => handleDateSelect(Object.assign(initialData, {
-                  shopify_title: item.shopifyBox.shopify_title,
-                  //delivered: new Date(item.delivered).toDateString(),
-                  delivered: new Date(item.delivered).toDateString(),
-                  shopify_id: item.shopifyBox.shopify_product_id,
-                  box_id: item.id,
-                  /* reset because selected different box */
-                  including: [],
-                  dislikes: [],
-                  addons: [],
-                  quantities: [],
-                  subscription: '',
-                  is_loaded: false,
-                })),
-              }
-            ))
-          }
-        />
-      </Popover>
+      return (
+        <Popover
+          fullWidth
+          active={selectActive}
+          activator={activator}
+          onClose={toggleSelectActive}
+        >
+          <ActionList
+            items={
+              boxes.map((item) => (
+                {
+                  content: new Date(item.delivered).toDateString(),
+                  onAction: () => handleDateSelect(Object.assign(initialData, {
+                    shopify_title: item.shopifyBox.shopify_title,
+                    //delivered: new Date(item.delivered).toDateString(),
+                    delivered: new Date(item.delivered).toDateString(),
+                    shopify_id: item.shopifyBox.shopify_product_id,
+                    box_id: item.id,
+                    /* reset because selected different box */
+                    including: [],
+                    dislikes: [],
+                    addons: [],
+                    quantities: [],
+                    subscription: '',
+                    is_loaded: false,
+                  })),
+                }
+              ))
+            }
+          />
+        </Popover>
+      );
     };
     return null;
   };
@@ -116,7 +118,7 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
   return (
     <>
       <ShowBanner />
-      <ShowSelect />
+      <ShowSelect boxes={boxes} />
     </>
   );
 }
