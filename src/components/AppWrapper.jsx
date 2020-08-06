@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ApolloProvider } from '@apollo/client';
 import Client from '../graphql/client';
-import { makeInitialState } from '../lib';
+import { makeInitialState, postFetch } from '../lib';
 import Loader from './common/Loader';
 import Error from './common/Error';
 import Get from './common/Get';
@@ -14,15 +14,6 @@ import {
 export default function AppWrapper() {
   const shopifyId = parseInt(document.querySelector('form[action="/cart/add"]')
     .getAttribute('id').split('_')[2], 10);
-
-  function postFetch(url, data) {
-    // console.log('sending to ', url, data);
-    return fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-  }
 
   useEffect(() => {
     // get some page elements
@@ -136,7 +127,7 @@ export default function AppWrapper() {
         });
         update.updates[option.value] = 0;
         postFetch('/cart/update.js', update)
-          .then(() => {
+          .then((res) => {
             // console.log('returned from cart/update', res);
             cartCount.innerHTML = initialCount - totalQuantity;
             postFetch('/cart/add.js', { items })
@@ -182,9 +173,7 @@ export default function AppWrapper() {
 
           // idea is that we can use initial also for subscriptions
           // this returns an empty initial state if no data
-          console.log('wtf');
           const initial = makeInitialState({ response, path });
-          console.log(initial);
 
           if (response) {
             Client.cache.writeQuery({ query: GET_INITIAL, data: { initial } });

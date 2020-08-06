@@ -9,7 +9,7 @@ import DateSelect from './boxes/DateSelect';
 import Subscription from './boxes/Subscription';
 import Box from './boxes/Box';
 import Spacer from './common/Spacer';
-import { makeCurrent, numberFormat, updateTotalPrice } from '../lib';
+import { postFetch, makeCurrent, numberFormat, updateTotalPrice } from '../lib';
 import {
   GET_BOXES,
 } from '../graphql/queries';
@@ -43,6 +43,30 @@ export default function App({ shopifyId }) {
     */
   };
   /* end subscription selector */
+
+  const removeFromCart = () => {
+    const { current } = client.readQuery({
+      query: GET_CURRENT_SELECTION,
+    });
+    const { initial } = client.readQuery({
+      query: GET_INITIAL,
+    });
+    const update = { updates: {} };
+    let totalQuantity = 1; // one for the main box the rest addons
+    initial.quantities.forEach(({ quantity, variant_id: variantId }) => {
+      update.updates[variantId] = 0;
+      totalQuantity += quantity;
+    });
+    update.updates[current.box.shopifyBox.shopify_variant_id] = 0;
+    console.log('submitted to update', update);
+    const cartIcon = document.querySelector('div[data-cart-count-bubble');
+    const cartCount = cartIcon.querySelector('span[data-cart-count]');
+    postFetch('/cart/update.js', update)
+      .then((res) => {
+        console.log('returned from cart/update', res);
+        cartCount.innerHTML = 0;
+      });
+  }
 
   return (
     <Query
@@ -152,6 +176,7 @@ export default function App({ shopifyId }) {
                 </>
               );
 
+
               return (
                 <div style={{
                   paddingBottom: '1rem',
@@ -160,6 +185,7 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
+                  { testMarkup }
                   <Spacer />
                   <DateSelect
                     boxes={boxes}
@@ -170,6 +196,13 @@ export default function App({ shopifyId }) {
                     <Box
                       loaded={loaded}
                     />
+                  }
+                  <Spacer />
+                  { initial.is_loaded && 
+                    <Button
+                      fullWidth 
+                      onClick={ () => removeFromCart() }>
+                      REMOVE FROM CART</Button>
                   }
                   <Spacer />
                   <Subscription

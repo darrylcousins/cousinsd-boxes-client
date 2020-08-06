@@ -5,6 +5,15 @@ import {
   GET_CURRENT_SELECTION,
 } from '../graphql/local-queries';
 
+export function postFetch(url, data) {
+  // console.log('sending to ', url, data);
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
 export const nameSort = (a, b) => {
   const prodA = a.shopify_title.toUpperCase();
   const prodB = b.shopify_title.toUpperCase();
@@ -30,6 +39,10 @@ export const updateTotalPrice = (client) => {
     query: GET_CURRENT_SELECTION,
   });
 
+  if (!current.box.shopifyBox) {
+    console.log('hopoing this is the spot', JSON.stringify(current, null, 2));
+    return null;
+  }
   let price = current.box.shopifyBox.shopify_price;
   current.addons.forEach((el) => {
     price += el.quantity * el.shopify_price;

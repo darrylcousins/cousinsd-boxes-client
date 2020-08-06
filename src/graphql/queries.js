@@ -41,6 +41,7 @@ export const GET_BOXES = gql`
         shopifyBox {
           shopify_product_gid
           shopify_product_id
+          shopify_variant_id
           shopify_handle
           shopify_title
           shopify_price
