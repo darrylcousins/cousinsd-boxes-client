@@ -61,10 +61,18 @@ export default function App({ shopifyId }) {
     console.log('submitted to update', update);
     const cartIcon = document.querySelector('div[data-cart-count-bubble');
     const cartCount = cartIcon.querySelector('span[data-cart-count]');
+    const cartPopup = document.querySelector('div[data-cart-popup-wrapper');
+    const cartPopupCount = cartPopup.querySelector('span[data-cart-popup-quantity]');
+    const cartPopupCountCart = cartPopup.querySelector('span[data-cart-popup-cart-quantity]');
     postFetch('/cart/update.js', update)
       .then((res) => {
         console.log('returned from cart/update', res);
-        cartCount.innerHTML = 0;
+        cartIcon.classList.remove('hide');
+        cartPopup.classList.remove('cart-popup-wrapper--hidden');
+        const itemCount = 0;
+        cartCount.innerHTML = itemCount;
+        cartPopupCount.innerHTML = itemCount;
+        cartPopupCountCart.innerHTML = itemCount;
       });
   }
 
