@@ -92,7 +92,7 @@ export default function AppWrapper() {
       const base64 = buff.toString('base64');
       const split64 = base64.split('').reduce((total, current, idx) => {
         const count = 15;
-        if (idx%count === 0 && idx > 0) total += `<br />\n`;
+        if (idx%count === 0 && idx > 0) total += `\n`;
         return `${total}${current}`; 
       }, '');
       console.log(split64);
