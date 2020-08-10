@@ -90,13 +90,19 @@ export default function AppWrapper() {
       };
       const buff = Buffer.from(JSON.stringify(buffDict), 'utf-8');
       const base64 = buff.toString('base64');
+      const split64 = base64.split('').reduce((total, current, idx) => {
+        const count = 15;
+        if (idx%count === 0 && idx > 0) total += `\n`;
+        return `${total}${current}`; 
+      }, '');
+      console.log(split64);
 
       const properties = {
         'Delivery Date': `${delivered}`,
-        Including: including,
+        'Including': including,
         'Add on items': addons,
         'Removed items': removed,
-        'ShopID': base64,
+        'ShopID': split64,
       };
 
       const { subscription } = current;
@@ -177,7 +183,7 @@ export default function AppWrapper() {
   return (
     <ApolloProvider client={Client}>
       <Get
-        url="/cart-empty.js"
+        url="/cart.js"
       >
         {({ loading, error, response }) => {
           if (loading) return <Loader lines={4} />;
