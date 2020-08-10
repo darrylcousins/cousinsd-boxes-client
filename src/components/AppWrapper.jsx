@@ -15,6 +15,17 @@ export default function AppWrapper() {
   const shopifyId = parseInt(document.querySelector('form[action="/cart/add"]')
     .getAttribute('id').split('_')[2], 10);
 
+  const sliceString = (str) => {
+    //slice string into blocks of 15
+    const doSlice = (start, next) => {
+      const sliceCount = 15;
+      if (next === '') return start
+      if (slice !== '') slice += '\n';
+      start = start + next.slice(0, 15)
+      return doSlice(start, next.slice(16));
+    };
+  };
+
   useEffect(() => {
     // get some page elements
     const form = document.querySelector('form[action="/cart/add"]');
@@ -72,11 +83,20 @@ export default function AppWrapper() {
       const removed = current.dislikes.map((el) => el.shopify_title).join(', ');
       const including = current.including.map((el) => el.shopify_title).join(', ');
 
+      const buffDict = {
+        i: current.including.map(el => el.id),
+        a: current.addons.map(el => [el.id, el.quantity]),
+        d: current.dislikes.map(el => el.id),
+      };
+      const buff = Buffer.from(JSON.stringify(buffDict), 'utf-8');
+      const base64 = buff.toString('base64');
+
       const properties = {
         'Delivery Date': `${delivered}`,
         Including: including,
         'Add on items': addons,
         'Removed items': removed,
+        'ShopID': base64,
       };
 
       const { subscription } = current;
@@ -157,7 +177,7 @@ export default function AppWrapper() {
   return (
     <ApolloProvider client={Client}>
       <Get
-        url="/cart.js"
+        url="/cart-empty.js"
       >
         {({ loading, error, response }) => {
           if (loading) return <Loader lines={4} />;
