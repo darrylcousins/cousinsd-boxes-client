@@ -183,7 +183,7 @@ export const makeInitialState = ({ response, path }) => {
 
   if (response.items) {
     response.items.forEach((el) => {
-      if (el.product_type === 'Container Box' && path.indexOf(el.handle)) {
+      if (el.product_type === 'Container Box' && path.indexOf(el.handle) > -1) {
         const totalPrice = response.total_price; // true total including addons
         const shopifyTitle = el.title;
         const shopifyId = el.product_id;
@@ -205,24 +205,27 @@ export const makeInitialState = ({ response, path }) => {
         });
       }
     });
-    response.items.forEach((el) => {
-      if (el.product_type === 'Box Produce') {
-        // Delivery Date: Wed Jul 22 2020
-        // Add on product to: Box title
-        if (cart.addons.indexOf(el.handle) > -1) {
-          const props = el.properties;
-          if (exAddOns in props && deliveryDate in props) {
-            if (props[deliveryDate] === cart.delivered && props[exAddOns] === cart.shopify_title) {
-              cart.quantities.push({
-                handle: el.handle,
-                quantity: el.quantity,
-                variant_id: el.variant_id,
-              });
+
+    if (cart.is_loaded) {
+      response.items.forEach((el) => {
+        if (el.product_type === 'Box Produce') {
+          // Delivery Date: Wed Jul 22 2020
+          // Add on product to: Box title
+          if (cart.addons.indexOf(el.handle) > -1) {
+            const props = el.properties;
+            if (exAddOns in props && deliveryDate in props) {
+              if (props[deliveryDate] === cart.delivered && props[exAddOns] === cart.shopify_title) {
+                cart.quantities.push({
+                  handle: el.handle,
+                  quantity: el.quantity,
+                  variant_id: el.variant_id,
+                });
+              }
             }
           }
         }
-      }
-    });
+      });
+    };
   }
   return cart;
 };
