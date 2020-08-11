@@ -180,9 +180,11 @@ export const makeInitialState = ({ response, path }) => {
   };
 
   //console.log(response);
+  console.log('fuck', path);
 
   if (response.items) {
     response.items.forEach((el) => {
+      console.log('fuck', path, el.handle);
       if (el.product_type === 'Container Box' && path.indexOf(el.handle) > -1) {
         const totalPrice = response.total_price; // true total including addons
         const shopifyTitle = el.title;
