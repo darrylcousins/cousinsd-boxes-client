@@ -114,7 +114,6 @@ export default function App({ shopifyId }) {
                 button.classList.remove('btn');
               }
               const initialCopy = JSON.parse(JSON.stringify(initial));
-              console.log('intial COPY', JSON.stringify(initial));
 
               // we re running a stored box (cart or subscription)
               if (initialCopy.delivered.length > 0) {
@@ -194,7 +193,6 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
-                    { testMarkup }
                   <Spacer />
                   <DateSelect
                     boxes={boxes}

@@ -196,6 +196,7 @@ export default function AppWrapper() {
           } else {
             path = [];
           }
+          console.log(path);
 
           // idea is that we can use initial also for subscriptions
           // this returns an empty initial state if no data

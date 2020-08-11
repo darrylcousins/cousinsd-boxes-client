@@ -40,7 +40,7 @@ export const updateTotalPrice = (client) => {
   });
 
   if (!current.box.shopifyBox) {
-    console.log('hopoing this is the spot', JSON.stringify(current, null, 2));
+    //console.log('hopoing this is the spot', JSON.stringify(current, null, 2));
     return null;
   }
   let price = current.box.shopifyBox.shopify_price;
@@ -49,7 +49,7 @@ export const updateTotalPrice = (client) => {
   });
   price = numberFormat(price * 0.01);
 
-  console.log('updating price', price);
+  //console.log('updating price', price);
   const priceEl = document.querySelector('span[data-regular-price]');
   if (priceEl) priceEl.innerHTML = price;
 };
@@ -180,11 +180,10 @@ export const makeInitialState = ({ response, path }) => {
   };
 
   //console.log(response);
-  console.log('fuck', path);
+  //console.log(path);
 
   if (response.items) {
     response.items.forEach((el) => {
-      console.log('fuck', path, el.handle);
       if (el.product_type === 'Container Box' && path.indexOf(el.handle) > -1) {
         const totalPrice = response.total_price; // true total including addons
         const shopifyTitle = el.title;
