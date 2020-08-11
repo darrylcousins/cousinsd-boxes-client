@@ -193,6 +193,8 @@ export const makeInitialState = ({ response, path }) => {
         const including = stringToArray(el.properties[productsIn]);
         const addons = stringToArray(el.properties[productsAdd]);
         const dislikes = stringToArray(el.properties[productsDislike]);
+        const prodData = JSON.parse(Buffer.from(el.properties['ShopID'], 'base64').toString('utf-8'));
+        console.log(JSON.stringify(prodData));
         cart = Object.assign(cart, {
           total_price: totalPrice,
           delivered,
@@ -214,7 +216,9 @@ export const makeInitialState = ({ response, path }) => {
           // Add on product to: Box title
           if (cart.addons.indexOf(el.handle) > -1) {
             const props = el.properties;
-            if (exAddOns in props && deliveryDate in props) {
+            if ('ShopId' in props && deliveryDate in props) {
+              const boxData = JSON.parse(Buffer.from(props['ShopID'], 'base64').toString('utf-8'));
+              console.log(JSON.stringify(boxData));
               if (props[deliveryDate] === cart.delivered && props[exAddOns] === cart.shopify_title) {
                 cart.quantities.push({
                   handle: el.handle,

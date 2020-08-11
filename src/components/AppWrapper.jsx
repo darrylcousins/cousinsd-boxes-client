@@ -64,6 +64,9 @@ export default function AppWrapper() {
       const title = current.box.shopifyBox.shopify_title;
       const { delivered } = current;
       const items = [];
+      const prodDict = { d: `${delivered}`, b: current.box.id };
+      const prodBuff = Buffer.from(JSON.stringify(prodDict), 'utf-8');
+      const prodBase64 = prodBuff.toString('base64');
 
       current.addons.forEach((el) => {
         items.push({
@@ -72,6 +75,7 @@ export default function AppWrapper() {
           properties: {
             'Delivery Date': `${delivered}`,
             'Add on product to': `${title}`,
+            'ShopID': base64,
           },
         });
       });
@@ -90,19 +94,13 @@ export default function AppWrapper() {
       };
       const buff = Buffer.from(JSON.stringify(buffDict), 'utf-8');
       const base64 = buff.toString('base64');
-      const split64 = base64.split('').reduce((total, current, idx) => {
-        const count = 15;
-        if (idx%count === 0 && idx > 0) total += `\n`;
-        return `${total}${current}`; 
-      }, '');
-      console.log(split64);
 
       const properties = {
         'Delivery Date': `${delivered}`,
         'Including': including,
         'Add on items': addons,
         'Removed items': removed,
-        'ShopID': split64,
+        'ShopID': base64,
       };
 
       const { subscription } = current;
