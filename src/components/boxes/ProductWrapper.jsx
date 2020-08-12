@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { COLOURS } from '../../config';
 
 const ProductWrapper = styled.div` 
   font-size: 0.95em;
@@ -14,16 +15,16 @@ const ProductWrapper = styled.div`
   align-items: center;
   padding: 0 1.5rem;
   background-color: ${(props) => {
-    if (!props.isAddOn && props.removable) return '#f0bab6';
-    if (props.isAddOn) return '#ffd940';
-    return '#8cd98c';
+    if (!props.isAddOn && props.removable) return COLOURS.removable;
+    if (props.isAddOn) return COLOURS.addon;
+    return COLOURS.including;
   }};
   border: 0.2rem solid white;
   border-color: white;
   transition: border-color 0.2s ease;
   border-radius: 2rem;
   line-height: 2rem;
-  color: ${(props) => (props.isAddOn ? '#000033' : '#001a00')};
+  color: ${(props) => (props.isAddOn ? COLOURS.text : COLOURS.text)};
   font-weight: 400;
 `;
 

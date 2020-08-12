@@ -187,7 +187,6 @@ export default function App({ shopifyId }) {
                 </>
               );
 
-
               return (
                 <div style={{
                   paddingBottom: '1rem',
