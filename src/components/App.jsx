@@ -187,21 +187,6 @@ export default function App({ shopifyId }) {
                 </>
               );
 
-              const DeliveryDate = () => {
-                const { initial } = client.readQuery({
-                  query: GET_INITIAL,
-                });
-                if (initial.delivered && loaded) {
-                  return (
-                    <>
-                      <Spacer />
-                      <TextStyle variation='subdued'>Delivery Date</TextStyle>
-                    </>
-                  );
-                };
-                return null
-              };
-
               return (
                 <div style={{
                   paddingBottom: '1rem',
@@ -210,7 +195,6 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
-                  <DeliveryDate />
                   <Spacer />
                   <DateSelect
                     boxes={boxes}

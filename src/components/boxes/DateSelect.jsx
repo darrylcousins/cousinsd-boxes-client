@@ -5,6 +5,7 @@ import {
   Button,
   Popover,
   ActionList,
+  TextStyle,
 } from '@shopify/polaris';
 import { InitialPropType, BoxPropType } from '../../graphql/init';
 
@@ -66,6 +67,12 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
       return (
         <div style={{ marginBottom: '1rem' }}>
           <Banner status="warning">Please choose a date for delivery</Banner>
+        </div>
+      );
+    } else if (deliveryDate) {
+      return (
+        <div style={{ marginBottom: '1rem' }}>
+          <TextStyle variation="subdued">Delivery Date:</TextStyle>
         </div>
       );
     };
