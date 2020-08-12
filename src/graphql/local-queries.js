@@ -14,6 +14,7 @@ export const GET_INITIAL = gql`
       total_price
       quantities
       is_loaded
+      prodData
     }
   }
 `;
@@ -36,6 +37,7 @@ export const PRODUCT_FRAGMENT = gql`
   fragment MyProduct on Product {
     quantity
     isAddOn
+    handle
   }
 `;
 

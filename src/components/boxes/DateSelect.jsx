@@ -40,6 +40,7 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
   useEffect(() => {
     
     if (initialData.delivered.length > 0) {
+      console.log(initialData);
       handleDateSelect(initialData);
     } else if (boxes.length === 1) {
       const data = Object.assign(initialData, {
@@ -53,6 +54,7 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
         addons: [],
         quantities: [],
         subscription: '',
+        prodData: {i: [], a: [], d: [] },
         is_loaded: false,
       });
       handleDateSelect(data);
@@ -102,6 +104,7 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
                     dislikes: [],
                     addons: [],
                     quantities: [],
+                    prodData: {i: [], a: [], d: [] },
                     subscription: '',
                     is_loaded: false,
                   })),
