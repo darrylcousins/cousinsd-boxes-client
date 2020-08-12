@@ -196,7 +196,6 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
-                  { testMarkup }
                   <Spacer />
                   <DateSelect
                     boxes={boxes}
