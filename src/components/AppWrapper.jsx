@@ -66,12 +66,16 @@ export default function AppWrapper() {
       const items = [];
 
       current.addons.forEach((el) => {
+        let prodDict = { d: `${delivered}`, b: current.box.id, p: el.id };
+        let prodBuff = Buffer.from(JSON.stringify(prodDict), 'utf-8');
+        let prodBase64 = prodBuff.toString('base64');
         items.push({
           quantity: el.quantity,
           id: el.shopify_variant_id.toString(),
           properties: {
             'Delivery Date': `${delivered}`,
             'Add on product to': `${title}`,
+            'ShopID': prodBase64,
           },
         });
       });
@@ -90,19 +94,13 @@ export default function AppWrapper() {
       };
       const buff = Buffer.from(JSON.stringify(buffDict), 'utf-8');
       const base64 = buff.toString('base64');
-      const split64 = base64.split('').reduce((total, current, idx) => {
-        const count = 15;
-        if (idx%count === 0 && idx > 0) total += `\n`;
-        return `${total}${current}`; 
-      }, '');
-      console.log(split64);
 
       const properties = {
         'Delivery Date': `${delivered}`,
         'Including': including,
         'Add on items': addons,
         'Removed items': removed,
-        'ShopID': split64,
+        'ShopID': base64,
       };
 
       const { subscription } = current;
@@ -152,6 +150,7 @@ export default function AppWrapper() {
           totalQuantity += quantity;
         });
         update.updates[option.value] = 0;
+        console.log('data to update', update.updates);
         postFetch('/cart/update.js', update)
           .then((res) => {
             // console.log('returned from cart/update', res);
@@ -170,7 +169,7 @@ export default function AppWrapper() {
       console.log('submitted to cart', JSON.stringify(items, null, 2));
       e.preventDefault();
       e.stopPropagation();
-      return false;
+      return true;
     };
     form.addEventListener('submit', submitHandler);
     return () => {
@@ -196,10 +195,11 @@ export default function AppWrapper() {
           } else {
             path = [];
           }
+          //console.log(path);
 
           // idea is that we can use initial also for subscriptions
           // this returns an empty initial state if no data
-          const initial = makeInitialState({ response, path });
+          const initial = makeInitialState({ response, path, client: Client });
 
           if (response) {
             Client.cache.writeQuery({ query: GET_INITIAL, data: { initial } });

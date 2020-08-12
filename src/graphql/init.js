@@ -11,6 +11,7 @@ export const initial = {
   subscription: '',
   total_price: 0,
   quantities: [],
+  prodData: {i:[],a:[],d:[]},
   is_loaded: false, // flag if loaded from cart or subscription
 };
 

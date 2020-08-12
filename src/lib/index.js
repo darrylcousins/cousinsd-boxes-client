@@ -40,7 +40,7 @@ export const updateTotalPrice = (client) => {
   });
 
   if (!current.box.shopifyBox) {
-    console.log('hopoing this is the spot', JSON.stringify(current, null, 2));
+    //console.log('hopoing this is the spot', JSON.stringify(current, null, 2));
     return null;
   }
   let price = current.box.shopifyBox.shopify_price;
@@ -49,7 +49,7 @@ export const updateTotalPrice = (client) => {
   });
   price = numberFormat(price * 0.01);
 
-  console.log('updating price', price);
+  //console.log('updating price', price);
   const priceEl = document.querySelector('span[data-regular-price]');
   if (priceEl) priceEl.innerHTML = price;
 };
@@ -115,17 +115,12 @@ export const makeCurrent = ({ current, client }) => {
     });
 
   const including = (current.including.length)
-    ? boxProducts.filter((el) => current.including.indexOf(el.shopify_handle) > -1)
+    ? boxProducts.filter((el) => current.including.indexOf(el.id) > -1)
     : boxProducts;
-  // XXX adjust for (qty)
-  const tempAddOns = current.addons.map((el) => {
-    const idx = el.indexOf(' ');
-    if (idx > -1) return el.slice(0, idx);
-    return el;
-  });
-  const addons = availAddOns.filter((el) => tempAddOns.indexOf(el.shopify_handle) > -1);
-  const exaddons = availAddOns.filter((el) => tempAddOns.indexOf(el.shopify_handle) === -1);
-  const dislikes = boxProducts.filter((el) => current.dislikes.indexOf(el.shopify_handle) > -1);
+  const tempAddons = current.addons.map(el => el[0]);
+  const addons = availAddOns.filter((el) => tempAddons.indexOf(el.id) > -1);
+  const exaddons = availAddOns.filter((el) => tempAddons.indexOf(el.id) === -1);
+  const dislikes = boxProducts.filter((el) => current.dislikes.indexOf(el.id) > -1);
 
   // console.log('box current', JSON.stringify(current, null, 1));
 
@@ -159,7 +154,7 @@ export const stringToArray = (arr) => {
   return result;
 }
 
-export const makeInitialState = ({ response, path }) => {
+export const makeInitialState = ({ response, path, client }) => {
   const [deliveryDate, productsIn, productsAdd, productsDislike, subscribed, exAddOns] = LABELKEYS;
 
   const priceEl = document.querySelector('span[data-regular-price]');
@@ -176,24 +171,25 @@ export const makeInitialState = ({ response, path }) => {
     subscription: '',
     total_price: price,
     quantities: [],
+    prodData: {i:[],a:[],d:[]},
     is_loaded: false,
   };
 
   //console.log(response);
-  console.log('fuck', path);
+  //path =['large-veggie-box'];
 
   if (response.items) {
     response.items.forEach((el) => {
-      console.log('fuck', path, el.handle);
       if (el.product_type === 'Container Box' && path.indexOf(el.handle) > -1) {
         const totalPrice = response.total_price; // true total including addons
         const shopifyTitle = el.title;
         const shopifyId = el.product_id;
         const delivered = el.properties[deliveryDate];
         const subscription = subscribed in el.properties ? el.properties[subscribed] : '';
-        const including = stringToArray(el.properties[productsIn]);
-        const addons = stringToArray(el.properties[productsAdd]);
-        const dislikes = stringToArray(el.properties[productsDislike]);
+        const including = el.properties[productsIn].split(',').map(el => el.trim()).filter(el => el !== '');
+        const addons = el.properties[productsAdd].split(',').map(el => el.trim()).filter(el => el !== '');
+        const dislikes = el.properties[productsDislike].split(',').map(el => el.trim()).filter(el => el !== '');
+        const prodData = JSON.parse(Buffer.from(el.properties['ShopID'], 'base64').toString('utf-8'));
         cart = Object.assign(cart, {
           total_price: totalPrice,
           delivered,
@@ -203,6 +199,7 @@ export const makeInitialState = ({ response, path }) => {
           addons,
           dislikes,
           subscription,
+          prodData,
           is_loaded: true,
         });
       }
@@ -213,16 +210,15 @@ export const makeInitialState = ({ response, path }) => {
         if (el.product_type === 'Box Produce') {
           // Delivery Date: Wed Jul 22 2020
           // Add on product to: Box title
-          if (cart.addons.indexOf(el.handle) > -1) {
-            const props = el.properties;
-            if (exAddOns in props && deliveryDate in props) {
-              if (props[deliveryDate] === cart.delivered && props[exAddOns] === cart.shopify_title) {
-                cart.quantities.push({
-                  handle: el.handle,
-                  quantity: el.quantity,
-                  variant_id: el.variant_id,
-                });
-              }
+          const props = el.properties;
+          if ('ShopID' in props && deliveryDate in props) {
+            const boxData = JSON.parse(Buffer.from(props['ShopID'], 'base64').toString('utf-8'));
+            if (boxData['d'] === cart.delivered && props[exAddOns] === cart.shopify_title) {
+              cart.quantities.push({
+                handle: el.handle,
+                quantity: el.quantity,
+                variant_id: el.variant_id,
+              });
             }
           }
         }

@@ -114,7 +114,6 @@ export default function App({ shopifyId }) {
                 button.classList.remove('btn');
               }
               const initialCopy = JSON.parse(JSON.stringify(initial));
-              console.log('intial COPY', JSON.stringify(initial));
 
               // we re running a stored box (cart or subscription)
               if (initialCopy.delivered.length > 0) {
@@ -136,10 +135,10 @@ export default function App({ shopifyId }) {
                   const start = {
                     box,
                     delivered: initialData.delivered,
-                    including: [...initialData.including],
-                    addons: [...initialData.addons],
+                    including: [...initialData.prodData.i],
+                    addons: [...initialData.prodData.a],
                     exaddons: [],
-                    dislikes: [...initialData.dislikes],
+                    dislikes: [...initialData.prodData.d],
                     quantities: [...initialData.quantities],
                     subscription: initialData.subscription,
                   };
@@ -182,6 +181,9 @@ export default function App({ shopifyId }) {
                   <Spacer />
                   <Button fullWidth onClick={ () => console.log(JSON.stringify(client.cache.data.data.ROOT_QUERY.initial, null, 2)) }>
                     show initial</Button>
+                  <Spacer />
+                  <Button fullWidth onClick={ () => console.log(client.cache.data.data) }>
+                    show cache</Button>
                 </>
               );
 
@@ -194,7 +196,6 @@ export default function App({ shopifyId }) {
                   position: 'relative',
                 }}
                 >
-                    { testMarkup }
                   <Spacer />
                   <DateSelect
                     boxes={boxes}

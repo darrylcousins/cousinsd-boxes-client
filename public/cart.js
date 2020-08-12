@@ -1,65 +1,32 @@
 {
-  "token": "86527ba54871eaa53a25decff4960a5f",
-  "note": null,
   "total_price": 5900,
-  "item_count": 4,
   "items": [
     {
-      "id": 31712538263610,
       "properties": {
-        "Delivery Date": "Wed Aug 05 2020",
-        "Including": "Beans Yellow, Dill, Lettuce, Onions Red, Seeded Sourdough Bread, Turnips, Yams",
-        "Add on items": "Capsicum (2), Swedes, Purple Heart Potatoes",
-        "Removed items": "Cabbage"
+        "Delivery Date": "Sat Aug 15 2020",
+        "Including": "Beans Green, Beetroot, Brocolli, Brussels Sprouts, Apples NZ Rose",
+        "Add on items": "Spinach",
+        "Removed items": "Baby Kale",
+        "ShopID": "eyJpIjpbIjQiLCI2IiwiNyIsIjgiLCIyIl0sImEiOltbIjQyIiwxXV0sImQiOlsiMyJdfQ=="
       },
       "quantity": 1,
-      "variant_id": 31712538263610,
-      "title": "Large Vege - Seasonal Organic Box",
-      "price": 5000,
-      "product_id": 4486431703098,
-      "handle": "small-seasonal-vege-box",
+      "variant_id": 35420250308759,
+      "title": "Large Veggie Box",
+      "product_id": 5479473447063,
+      "handle": "large-veggie-box",
       "product_type": "Container Box"
     },
     {
-      "id": 3179245977,
       "properties": {
-        "Add on product to": "Large Vege - Seasonal Organic Box",
-        "Delivery Date": "Wed Aug 05 2020"
-      },
-      "quantity": 2,
-      "variant_id": 31792462954554,
-      "title": "Capsicum - Capsicum",
-      "price": 450,
-      "product_id": 4502213754938,
-      "handle": "capsicum",
-      "product_type": "Box Produce"
-    },
-    {
-      "id": 4502213656634,
-      "properties": {
-        "Add on product to": "Large Vege - Seasonal Organic Box",
-        "Delivery Date": "Wed Aug 05 2020"
+        "Add on product to": "Large Veggie Box",
+        "Delivery Date": "Sat Aug 15 2020",
+        "ShopID": "eyJkIjoiU2F0IEF1ZyAxNSAyMDIwIiwiYiI6IjEzIiwicCI6IjQyIn0="
       },
       "quantity": 1,
-      "variant_id": 31792462594106,
-      "title": "Purple Heart Potatoes - Purple Heart Potatoes",
-      "price": 450,
-      "product_id": 4502213460026,
-      "handle": "purple-heart-potatoes",
-      "product_type": "Box Produce"
-    },
-    {
-      "id": 4502213656634,
-      "properties": {
-        "Add on product to": "Large Vege - Seasonal Organic Box",
-        "Delivery Date": "Wed Aug 05 2020"
-      },
-      "quantity": 1,
-      "variant_id": 31792462856250,
-      "title": "Swedes - Swedes",
-      "price": 450,
-      "product_id": 4502213656634,
-      "handle": "swedes",
+      "variant_id": 35420261023895,
+      "title": "Spinach",
+      "product_id": 5479476035735,
+      "handle": "spinach",
       "product_type": "Box Produce"
     }
   ]
