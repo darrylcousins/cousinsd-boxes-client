@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Stack,
   Subheading,
+  TextStyle,
 } from '@shopify/polaris';
 import { Query } from '@apollo/react-components';
 import styled from 'styled-components';
@@ -28,7 +29,7 @@ export default function ProductList({ type }) {
       title = 'box products';
       break;
     case 'dislikes':
-      title = 'dislikes';
+      title = '';
       break;
     case 'exaddons':
       title = 'available addons';
@@ -54,6 +55,12 @@ export default function ProductList({ type }) {
           return (
             <ListWrapper>
               <Subheading>{title}</Subheading>
+              { data.current.dislikes.length > 0 && (
+                <TextStyle variation="subdued">
+                  A surprise item will be substituted.
+                </TextStyle>
+                )
+              }
               <Spacer />
               <Stack
                 spacing="extraTight"
