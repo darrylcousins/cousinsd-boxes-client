@@ -33,10 +33,17 @@ export default function Box({ loaded }) {
     return null;
   };
 
+  const DislikesMarkup = () => {
+    if (current.including.length > 0) return (
+      <SelectDislikes />
+    );
+    return null;
+  };
+
   const customiseMarkup = (
     <>
       <Spacer />
-      <SelectDislikes />
+      <DislikesMarkup />
       <ProductList type="dislikes" />
       <AddOnMarkup />
     </>
