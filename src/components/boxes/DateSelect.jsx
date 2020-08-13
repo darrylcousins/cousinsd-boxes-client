@@ -41,7 +41,6 @@ export default function DateSelect({ initialData, boxes, onSelect }) {
   useEffect(() => {
     
     if (initialData.delivered.length > 0) {
-      console.log(initialData);
       handleDateSelect(initialData);
     } else if (boxes.length === 1) {
       const data = Object.assign(initialData, {

@@ -11,7 +11,8 @@ if (form) {
   const parent = form.parentNode;
   form.remove();
   parent.appendChild(cln);
-  // console.log('removing and cloning form');
+  const button = cln.querySelector('button[name="add"]');
+  button.classList.add('hide');
 }
 
 function WrappedApp() {

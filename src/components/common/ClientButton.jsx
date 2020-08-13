@@ -1,0 +1,40 @@
+import styled from 'styled-components';
+
+const ClientButton = styled.button` 
+  list-style: none;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  font: inherit;
+  margin: 0;
+  touch-action: manipulation;
+  user-select: none;
+  appearance: none;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 8px 15px;
+  font-family: Helvetica,"Helvetica Neue",Arial,"Lucida Grande",sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  background-color: #fff;
+  color: #3a3a3a;
+  border-color: #3a3a3a;
+  display: block;
+  width: 100%;
+  line-height: 1.4;
+  padding-left: 5px;
+  padding-right: 5px;
+  white-space: normal;
+  margin-top: 0;
+  margin-bottom: 10px;
+  min-height: 44px;
+  opacity: 1;
+  cursor: pointer;
+`;
+
+export default ClientButton;

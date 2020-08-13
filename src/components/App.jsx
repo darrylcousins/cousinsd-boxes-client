@@ -9,6 +9,7 @@ import DateSelect from './boxes/DateSelect';
 import Subscription from './boxes/Subscription';
 import Box from './boxes/Box';
 import Spacer from './common/Spacer';
+import ClientButton from './common/ClientButton';
 import { postFetch, makeCurrent, numberFormat, updateTotalPrice } from '../lib';
 import {
   GET_BOXES,
@@ -59,13 +60,17 @@ export default function App({ shopifyId }) {
     });
     update.updates[current.box.shopifyBox.shopify_variant_id] = 0;
     console.log('submitted to update', update);
+    /*
     const cartIcon = document.querySelector('div[data-cart-count-bubble');
     const cartCount = cartIcon.querySelector('span[data-cart-count]');
     const cartPopup = document.querySelector('div[data-cart-popup-wrapper');
     const cartPopupCount = cartPopup.querySelector('span[data-cart-popup-quantity]');
     const cartPopupCountCart = cartPopup.querySelector('span[data-cart-popup-cart-quantity]');
+    */
     postFetch('/cart/update.js', update)
       .then((res) => {
+        if (typeof window !== undefined) window.location.href='/cart';
+        /*
         console.log('returned from cart/update', res);
         cartIcon.classList.remove('hide');
         cartPopup.classList.remove('cart-popup-wrapper--hidden');
@@ -73,6 +78,7 @@ export default function App({ shopifyId }) {
         cartCount.innerHTML = itemCount;
         cartPopupCount.innerHTML = itemCount;
         cartPopupCountCart.innerHTML = itemCount;
+        */
       });
   }
 
@@ -208,12 +214,11 @@ export default function App({ shopifyId }) {
                   }
                   <Spacer />
                   { initial.is_loaded && 
-                    <Button
-                      fullWidth 
+                    <ClientButton
+                      type="button"
                       onClick={ () => removeFromCart() }>
-                      REMOVE FROM CART</Button>
+                      Remove from cart</ClientButton>
                   }
-                  <Spacer />
                   <Subscription
                     state={initial.subscription}
                     handleChange={handleSubscriptionChange}

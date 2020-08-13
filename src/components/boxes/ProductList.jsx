@@ -55,7 +55,7 @@ export default function ProductList({ type }) {
           return (
             <ListWrapper>
               <Subheading>{title}</Subheading>
-              { data.current.dislikes.length > 0 && (
+              { data.current.dislikes.length > 0 && type === 'dislikes' && (
                 <TextStyle variation="subdued">
                   A surprise item will be substituted.
                 </TextStyle>

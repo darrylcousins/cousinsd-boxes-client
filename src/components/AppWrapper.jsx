@@ -32,10 +32,8 @@ export default function AppWrapper() {
     form.removeAttribute('action');
     const button = document.querySelector('button[name="add"]');
     button.removeAttribute('type');
-    button.setAttribute('aria-disabled', true);
-    button.style.opacity = '1';
-    button.style.cursor = 'pointer';
     const buttonLoader = button.querySelector('span[data-loader]');
+    /*
     const cartIcon = document.querySelector('div[data-cart-count-bubble');
     const cartCount = cartIcon.querySelector('span[data-cart-count]');
     const cartPopup = document.querySelector('div[data-cart-popup-wrapper');
@@ -48,6 +46,7 @@ export default function AppWrapper() {
     } else {
       initialCount = parseInt(currentCount, 10);
     }
+    */
 
     const submitHandler = (e) => {
       buttonLoader.classList.remove('hide');
@@ -111,6 +110,7 @@ export default function AppWrapper() {
         properties,
       });
 
+      /*
       const onFinish = (data, values) => {
         // console.log('returned from post to cart', data);
         cartIcon.classList.remove('hide');
@@ -139,6 +139,7 @@ export default function AppWrapper() {
         button.querySelector('[data-add-to-cart-text]').innerHTML = 'Update selection';
       };
       // console.log('in action', initial);
+      */
 
       // XXX doing an update so delete items first
       // XXX will need a closer look when loading subscriptions
@@ -154,7 +155,7 @@ export default function AppWrapper() {
         postFetch('/cart/update.js', update)
           .then((res) => {
             // console.log('returned from cart/update', res);
-            cartCount.innerHTML = initialCount - totalQuantity;
+            //cartCount.innerHTML = initialCount - totalQuantity;
             postFetch('/cart/add.js', { items })
               .then((res) => {
                 //onFinish(res, items);
