@@ -18,7 +18,7 @@ const ThirdWidth = styled.div`
 `;
 
 const TwoThirdWidth = styled.div`
-  width: 100%;
+  width: 125%;
 `;
 
 export default function AddonText() {
