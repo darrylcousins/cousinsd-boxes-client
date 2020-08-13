@@ -1,5 +1,5 @@
-//export const HOST = 'https://d814c6c8656e.ngrok.io';
-export const HOST = 'https://southbridge-boxes.herokuapp.com';
+export const HOST = 'https://d814c6c8656e.ngrok.io';
+//export const HOST = 'https://southbridge-boxes.herokuapp.com';
 //export const HOST = 'https://streamside.herokuapp.com';
 //export const HOST = 'https://gp-regenerative.herokuapp.com';
 

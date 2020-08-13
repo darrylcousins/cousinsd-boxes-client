@@ -157,13 +157,15 @@ export default function AppWrapper() {
             cartCount.innerHTML = initialCount - totalQuantity;
             postFetch('/cart/add.js', { items })
               .then((res) => {
-                onFinish(res, items);
+                //onFinish(res, items);
+                if (typeof window !== undefined) window.location.href='/cart';
               });
           });
       } else {
         postFetch('/cart/add.js', { items })
           .then((res) => {
-            onFinish(res, items);
+            //onFinish(res, items);
+            if (typeof window !== undefined) window.location.href='/cart';
           });
       }
       console.log('submitted to cart', JSON.stringify(items, null, 2));
